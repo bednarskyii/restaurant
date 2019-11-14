@@ -1,4 +1,5 @@
 ﻿using System;
+using RestaurantApp.Pages;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -8,9 +9,10 @@ namespace RestaurantApp
     {
         public App()
         {
+
             InitializeComponent();
 
-            MainPage = new MainPage();
+            MainPage = new MenuPage();
         }
 
         protected override void OnStart()
