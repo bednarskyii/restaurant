@@ -12,70 +12,61 @@
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
 
-            <StackLayout Grid.Row="0" BackgroundColor="Black" Margin="0,30,0,0"></StackLayout>
+            <StackLayout Grid.Row="0" BackgroundColor="Black" Margin="0,30,0,0">
+                <Label Text="RestaurantName" TextColor="White" FontAttributes="Bold" FontSize="30" Margin="30,5,5,5"/>      
+            </StackLayout>
 
-            <Grid Grid.Row="1" BackgroundColor="DarkGray" Margin="0" Padding="0">
+            <CollectionView ItemsSource="{Binding DishTypes}"
+                            ItemsLayout="HorizontalList"
+                            Grid.Row="1"
+                            HorizontalOptions="CenterAndExpand"
+                            BackgroundColor="Black">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Button Padding="5" Text="{Binding .}" TextColor="White" FontAttributes="Bold" FontSize="20" BackgroundColor="Black"/>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
 
+            <Grid Grid.Row="2" BackgroundColor="White">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="0.7*"/>
+                    <ColumnDefinition Width="0.3*"/>
                 </Grid.ColumnDefinitions>
 
-                <local:ButtonFrame Padding="0" Grid.Column="0">
-                    <Button BackgroundColor="Black" TextColor="White" Text="dish" />
-                </local:ButtonFrame>
-                <local:ButtonFrame Padding="0"  Grid.Column="1">
-                    <Button BackgroundColor="Black" TextColor="White" Text="disdfsdfsdfsh"/>
-                </local:ButtonFrame>
-                <Button TextColor="White" Text="dishsdf" Grid.Column="2"/>
-                <Button TextColor="White" Text="dishdsf" Grid.Column="3"/>
-                <Button TextColor="White" Text="dissdfh" Grid.Column="4"/>
-                <Button TextColor="White" Text="disdfh" Grid.Column="5"/>
-                <Button TextColor="White" Text="dishdfs" Grid.Column="6"/>
-
-            </Grid>
-
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0.8*"/>
-                    <ColumnDefinition Width="0.2*"/>
-                </Grid.ColumnDefinitions>
-
-                <CollectionView Grid.Column="0" Margin="20" Grid.Row="2" ItemsSource="{Binding Dishes}" BackgroundColor="Gray">
+                <CollectionView VerticalOptions="Start" Grid.Column="0" Margin="20" ItemsSource="{Binding Dishes}" BackgroundColor="White">
                     <CollectionView.ItemsLayout>
-                        <GridItemsLayout Orientation="Vertical" Span="4" VerticalItemSpacing="10" HorizontalItemSpacing="10"/>
+                        <GridItemsLayout Orientation="Vertical" Span="2" VerticalItemSpacing="20" HorizontalItemSpacing="20"/>
                     </CollectionView.ItemsLayout>
 
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <Grid BackgroundColor="Black">
-
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="100"/>
-                                </Grid.RowDefinitions>
-
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="100"/>
-                                </Grid.ColumnDefinitions>
-
-                                <Label Text="swdf " HeightRequest="100"/>
-
-                            </Grid>
+                            <StackLayout Padding="10">
+                                <Frame WidthRequest="50" HasShadow="True">
+                                    <StackLayout HeightRequest="100" WidthRequest="100" BackgroundColor="White">
+                                        <Label Text="{Binding .}"/>
+                                    </StackLayout>
+                                </Frame>
+                            </StackLayout>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
-
                 </CollectionView>
-            </Grid>
-            
 
+                <ListView Grid.Column="1" ItemsSource="{Binding DishTypes}" Margin="20">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <Label Margin="15" Text="{Binding .}"/>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+            </Grid>
+       
         </Grid>
     </ContentPage.Content>
 </ContentPage>
