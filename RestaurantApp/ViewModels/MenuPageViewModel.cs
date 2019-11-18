@@ -1,43 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
+using RestaurantApp.Database;
+using RestaurantApp.Enums;
+using RestaurantApp.Models;
 
 namespace RestaurantApp.ViewModels
 {
-    public class MenuPageViewModel
+    public class MenuPageViewModel : INotifyPropertyChanged
     {
-        public List<string> DishTypes { get; set; }
+        private ObservableCollection<DishModel> _dishes;
+        private IDatabaseRepository _database;
+        private DishType _selectedDishType;
 
-        public string[] Dishes { get; set; } = new string[]
+        public List<string> DishTypes { get; set; }
+        public ObservableCollection<DishModel> Dishes
         {
-            "Baboon",
-            "Capuchin Monkey",
-            "Blue Monkey",
-            "Squirrel Monkey",
-            "Golden Lion Tamarin",
-            "Howler Monkey",
-            "Baboon",
-            "Capuchin Monkey",
-            "Blue Monkey",
-            "Squirrel Monkey",
-            "Golden Lion Tamarin",
-            "Howler Monkey",
-            "Japanese Macaque"
-        };
+            get => _dishes;
+
+            set
+            {
+                _dishes = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Dishes))); 
+            }
+        }
+
+        public DishType SelectedDish
+        {
+            get => _selectedDishType;
+
+            set
+            {
+                _selectedDishType = value;
+                //InitializeDishesList(_selectedDishType);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public MenuPageViewModel()
         {
-            DishTypes = new List<string>();
+            _database = new DatabaseRepository();
+            var listTypes = Enum.GetNames(typeof(DishType)).ToList();
+            DishTypes = new List<string>(listTypes);
 
-            DishTypes.Add("Breakfast");
-            DishTypes.Add("Salats");
-            DishTypes.Add("Juice");
-            DishTypes.Add("Vegetarian");
-            DishTypes.Add("Pizza");
-            DishTypes.Add("fserwr");
-            DishTypes.Add("Juirwererererce");
-            DishTypes.Add("Vegeerwerwerwertarian");
-            DishTypes.Add("Pizewrewrewreewza");
+            InitializeDishesList(DishType.Pizza);
+        }
 
+        public async Task InitializeDishesList(DishType type)
+        {
+            Dishes = new ObservableCollection<DishModel>(await _database.GetRecordsAsync());
         }
     }
 }
