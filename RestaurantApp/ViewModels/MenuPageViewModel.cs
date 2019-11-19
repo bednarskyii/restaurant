@@ -16,7 +16,22 @@ namespace RestaurantApp.ViewModels
         private IDatabaseRepository _database;
         private DishType _selectedDishType;
 
+        private ObservableCollection<DishModel> selectedDishes;
+        public ObservableCollection<DishModel> SelectedDishes
+        {
+            get
+            {
+                return selectedDishes;
+            }
+            set
+            {
+                selectedDishes = value;
+            }
+        }
+
+
         public List<string> DishTypes { get; set; }
+
         public ObservableCollection<DishModel> Dishes
         {
             get => _dishes;
@@ -53,6 +68,11 @@ namespace RestaurantApp.ViewModels
         public async Task InitializeDishesList(DishType type)
         {
             Dishes = new ObservableCollection<DishModel>(await _database.GetRecordsAsync());
+
+            SelectedDishes = new ObservableCollection<DishModel>()
+            {
+                Dishes[1], Dishes[3]
+            };
         }
     }
 }

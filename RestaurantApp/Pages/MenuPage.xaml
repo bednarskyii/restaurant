@@ -39,8 +39,7 @@
                                 Grid.Column="0"
                                 Margin="20"
                                 ItemsSource="{Binding Dishes}"
-                                BackgroundColor="White"
-                                SelectionMode="Multiple">
+                                BackgroundColor="White">
                     <CollectionView.ItemsLayout>
                         <GridItemsLayout Orientation="Vertical" Span="2" VerticalItemSpacing="20" HorizontalItemSpacing="20"/>
                     </CollectionView.ItemsLayout>
@@ -52,17 +51,21 @@
                                     <StackLayout HeightRequest="100" WidthRequest="100" BackgroundColor="White">
                                         <Label Text="{Binding Name}"/>
                                     </StackLayout>
+
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding CommandItemSelected}" CommandParameter="{Binding .}"/>
+                                    </Frame.GestureRecognizers>
                                 </Frame>
                             </StackLayout>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
 
-                <ListView Grid.Column="1" ItemsSource="{Binding DishTypes}" Margin="20">
+                <ListView Grid.Column="1" ItemsSource="{Binding SelectedDishes}" Margin="20" HasUnevenRows="False">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
-                                <Label Margin="15" Text="{Binding .}"/>
+                               <Label Margin="15" Text="{Binding Name}"/>
                             </ViewCell>
                         </DataTemplate>
                     </ListView.ItemTemplate>

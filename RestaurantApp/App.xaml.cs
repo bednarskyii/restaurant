@@ -12,7 +12,7 @@ namespace RestaurantApp
 
             InitializeComponent();
 
-            MainPage = new MenuPage();
+            MainPage = new MainPage();
         }
 
         protected override void OnStart()
