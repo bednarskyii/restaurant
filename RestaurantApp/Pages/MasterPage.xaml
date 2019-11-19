@@ -1,0 +1,33 @@
+﻿<ContentPage
+                  xmlns="http://xamarin.com/schemas/2014/forms"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                  x:Class="RestaurantApp.Pages.MasterPage"
+                  xmlns:local="clr-namespace:RestaurantApp.Models;assembly=RestaurantApp"
+                  xmlns:pages="clr-namespace:RestaurantApp.Pages;assembly=RestaurantApp"
+                  Title="Menu">
+
+        <ListView
+            x:Name="listView"
+            x:FieldModifier="public"
+            SeparatorVisibility="None">
+           <ListView.ItemsSource>
+                <x:Array Type="{x:Type local:MasterPageItem}">
+                    <local:MasterPageItem Title="Main menu" IconSource="icon.png" TargetType="{x:Type pages:MenuPage}" />
+                </x:Array>
+            </ListView.ItemsSource>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Grid Padding="5,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="30"/>
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Image Source="{Binding IconSource}" />
+                            <Label Grid.Column="1" Text="{Binding Title}" />
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+</ContentPage>
