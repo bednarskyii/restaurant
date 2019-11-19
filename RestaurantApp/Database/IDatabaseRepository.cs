@@ -11,5 +11,8 @@ namespace RestaurantApp.Database
         Task<List<DishModel>> GetRecordsAsync(DishType? type = null);
         Task SaveItemAsync(DishModel item);
         Task DeleteItemByIdAsync(Guid id);
+
+        Task AddCategory(string name);
+        Task<List<CategoryModel>> GetCategory(Guid? id = null);
     }
 }

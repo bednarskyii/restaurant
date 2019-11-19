@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="RestaurantApp.Pages.ManageCategoriesPage"
+             Title="Manage categories">
+    <ContentPage.Content>
+        <StackLayout>
+            <Entry Placeholder="Enter category name"/>
+            <Button Text="Add categoty"/>
+            <Label Text="List of categories:"/>
+                <ListView ItemsSource="{Binding CategoriesList}" Margin="20" HasUnevenRows="False">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                               <Label Margin="15" Text="{Binding CategoryName}"/>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

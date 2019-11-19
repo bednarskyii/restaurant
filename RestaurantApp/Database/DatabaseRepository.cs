@@ -18,6 +18,7 @@ namespace RestaurantApp.Database
             path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Restaurant.db3");
             database = new SQLiteAsyncConnection(path);
             database.CreateTableAsync<DishModel>().Wait();
+            database.CreateTableAsync<CategoryModel>().Wait();
         }
 
 
@@ -38,6 +39,16 @@ namespace RestaurantApp.Database
         public async Task SaveItemAsync(DishModel item)
         {
             await database.InsertAsync(item);
+        }
+
+        public async Task AddCategory(string Name)
+        {
+            await database.InsertAsync(new CategoryModel { CategoryId = Guid.NewGuid(), CategoryName = Name});
+        }
+
+        public async Task<List<CategoryModel>> GetCategory(Guid? id = null)
+        {
+            return await database.Table<CategoryModel>().ToListAsync();
         }
     }
 }

@@ -13,6 +13,7 @@
            <ListView.ItemsSource>
                 <x:Array Type="{x:Type local:MasterPageItem}">
                     <local:MasterPageItem Title="Main menu" IconSource="icon.png" TargetType="{x:Type pages:MenuPage}" />
+                    <local:MasterPageItem Title="Admin panel" IconSource="icon.png" TargetType="{x:Type pages:AdminPage}" />
                 </x:Array>
             </ListView.ItemsSource>
             <ListView.ItemTemplate>
