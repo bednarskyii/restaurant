@@ -43,12 +43,20 @@ namespace RestaurantApp.Database
 
         public async Task AddCategory(string Name)
         {
+            int count = await database.Table<CategoryModel>().Where(i => i.CategoryName == Name).CountAsync();
+
+            if (count == 0 && !string.IsNullOrEmpty(Name))
             await database.InsertAsync(new CategoryModel { CategoryId = Guid.NewGuid(), CategoryName = Name});
         }
 
         public async Task<List<CategoryModel>> GetCategory(Guid? id = null)
         {
             return await database.Table<CategoryModel>().ToListAsync();
+        }
+
+        public async Task DeleteCategory(Guid id)
+        {
+            await database.Table<CategoryModel>().Where(i => i.CategoryId == id).DeleteAsync();
         }
     }
 }

@@ -4,19 +4,33 @@
              x:Class="RestaurantApp.Pages.ManageCategoriesPage"
              Title="Manage categories">
     <ContentPage.Content>
-        <StackLayout>
-            <Entry Placeholder="Enter category name"/>
-            <Button Text="Add categoty"/>
-            <Label Text="List of categories:"/>
-                <ListView ItemsSource="{Binding CategoriesList}" Margin="20" HasUnevenRows="False">
+        <StackLayout Margin="20" >
+            <Entry Placeholder="Enter new category name" Text="{Binding NewCategoryName}"/>
+            <Button Text="Add categoty" Command="{Binding AddCategory}"/>
+            <Label Text="List of categories:" FontAttributes="Bold"/>
+                <ListView ItemsSource="{Binding CategoriesList}"
+                          Margin="0"
+                          SeparatorVisibility="None"
+                          SelectedItem="{Binding SelectedCategory}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
-                               <Label Margin="15" Text="{Binding CategoryName}"/>
+                                <Frame Padding="5" BorderColor="Black" Margin="0, 10, 10, 10" HeightRequest="50"> 
+                                   <Label Text="{Binding CategoryName}" FontSize="20"/>
+                                </Frame>
                             </ViewCell>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Text="Edit category" Grid.Column="0"/>
+                <Button Text="Delete category" TextColor="Red" Grid.Column="1" Command="{Binding DeleteCategory}"/>
+            </Grid>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

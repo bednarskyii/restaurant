@@ -6,8 +6,6 @@
 
     <pages:ManageCategoriesPage/>
 
-    <ContentPage Title="Manage menu">
-        <Label Text="manage menu"/>
-    </ContentPage>
+    <pages:ManageMenuPage/>
 
 </TabbedPage>
