@@ -15,14 +15,12 @@ namespace RestaurantApp.ViewModels
         private IDatabaseRepository database;
         private ObservableCollection<CategoryModel> categoriesList;
         private string newCategoryName;
-        private string enterCategoryName;
         private List<string> categoriesNames;
 
         public event PropertyChangedEventHandler PropertyChanged;
         public Command AddCategory { get; set; }
         public Command DeleteCategory { get; set; }
         public CategoryModel SelectedCategory { get; set; }
-        public bool IsCategoriesNoteVissible;
 
         public string NewCategoryName
         {
@@ -34,23 +32,6 @@ namespace RestaurantApp.ViewModels
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NewCategoryName)));
             }
         }
-
-        public string EnterCategoryName
-        {
-            get => enterCategoryName;
-
-            set
-            {
-                enterCategoryName = value;
-                if (categoriesNames.Contains(value))
-                    IsCategoriesNoteVissible = true;
-                else
-                    IsCategoriesNoteVissible = false;
-
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EnterCategoryName)));
-            }
-        }
-
 
         public ObservableCollection<CategoryModel> CategoriesList
         {

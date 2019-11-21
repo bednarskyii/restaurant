@@ -5,15 +5,49 @@
              Title="Manage menu">
     <ContentPage.Content>
         <StackLayout>
-            <Entry Placeholder="Enter category name" Text="{Binding EnterCategoryName}" />
 
-            <ListView ItemsSource="{Binding CategoriesList}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Label Text="{Binding CategoryName}"/>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+            <Grid>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+
+                <Frame Grid.Row="0" Padding="0" WidthRequest="220" HorizontalOptions="Center" Margin="10,10,10,0">
+                    <Grid Padding="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="60"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Entry Grid.Column="0" Placeholder="Enter category name" Text="{Binding EnterCategoryName}" ClearButtonVisibility="WhileEditing"/>
+                        <Button Grid.Column="1" Text="{Binding ShowHideText}" Command="{Binding ShowHideCommand}"/>
+                    </Grid>
+                </Frame>
+                <Grid BackgroundColor="Red" Grid.Row="1" HorizontalOptions="Center" IsVisible="{Binding IsListVisible}" VerticalOptions="Start">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200"/>
+                    </Grid.ColumnDefinitions>
+
+                    <ListView ItemsSource="{Binding CategoriesListToShow}" SeparatorVisibility="None" SelectedItem="{Binding SelectedCategory}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <Label Text="{Binding CategoryName}"/>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+                </Grid>
+            </Grid>
+
+            <Label Text="dsfsdfdsfosdfhdoshfosdhfsodfhsdofhofhsdofhsofhdosifhosdhf" VerticalOptions="Center"/>
+
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
