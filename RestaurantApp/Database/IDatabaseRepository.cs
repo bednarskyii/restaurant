@@ -8,8 +8,8 @@ namespace RestaurantApp.Database
 {
     public interface IDatabaseRepository
     {
-        Task<List<DishModel>> GetRecordsAsync(DishType? type = null);
-        Task SaveItemAsync(DishModel item);
+        Task<List<FoodModel>> GetRecordsAsync(CategoryModel type = null);
+        Task SaveItemAsync(FoodModel item);
         Task DeleteItemByIdAsync(Guid id);
 
         Task AddCategory(string name);

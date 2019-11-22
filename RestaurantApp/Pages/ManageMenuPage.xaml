@@ -5,49 +5,86 @@
              Title="Manage menu">
     <ContentPage.Content>
         <StackLayout>
+            <Frame HasShadow="True" Margin="20" Padding="5" HeightRequest="200">
+                <StackLayout >
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50"/>
+                            <RowDefinition Height="120"/>
+                        </Grid.RowDefinitions>
 
-            <Grid>
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="0.5*"/>
+                                <ColumnDefinition Width="0.2*"/>
+                                <ColumnDefinition Width="0.3*"/>
+                            </Grid.ColumnDefinitions>
 
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
+                            <Entry Placeholder="Enter name" Grid.Column="0"/>
+                            <Button Text="Image" Grid.Column="1"/>
+                                <Grid Grid.Column="2" Padding="0" WidthRequest="230" HorizontalOptions="End">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="160"/>
+                                        <ColumnDefinition Width="60"/>
+                                    </Grid.ColumnDefinitions>
 
-                <Frame Grid.Row="0" Padding="0" WidthRequest="220" HorizontalOptions="Center" Margin="10,10,10,0">
-                    <Grid Padding="0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="160"/>
-                            <ColumnDefinition Width="60"/>
-                        </Grid.ColumnDefinitions>
+                                    <Entry Grid.Column="0" Placeholder="Enter category name" Text="{Binding EnterCategoryName}" ClearButtonVisibility="WhileEditing"/>
+                                    <Button Grid.Column="1" Text="{Binding ShowHideText}" Command="{Binding ShowHideCommand}"/>
+                                </Grid>
+                        </Grid>
 
-                        <Entry Grid.Column="0" Placeholder="Enter category name" Text="{Binding EnterCategoryName}" ClearButtonVisibility="WhileEditing"/>
-                        <Button Grid.Column="1" Text="{Binding ShowHideText}" Command="{Binding ShowHideCommand}"/>
+                        <Entry Placeholder="Enter description" Grid.Row="1" HeightRequest="120"/>
+
+                        <Grid Margin="0,0,15,0" Grid.Row="1" HorizontalOptions="End" IsVisible="{Binding IsListVisible}" VerticalOptions="Start">
+                            <!--content view-->
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="120"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="200"/>
+                            </Grid.ColumnDefinitions>
+
+                            <ListView ItemsSource="{Binding CategoriesListToShow}" SeparatorVisibility="None" SelectedItem="{Binding SelectedCategory}">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <ViewCell>
+                                            <Label Text="{Binding CategoryName}" BackgroundColor="White" Padding="5" FontAttributes="Bold"/>
+                                        </ViewCell>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
                     </Grid>
-                </Frame>
-                <Grid BackgroundColor="Red" Grid.Row="1" HorizontalOptions="Center" IsVisible="{Binding IsListVisible}" VerticalOptions="Start">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                    </Grid.RowDefinitions>
+                </StackLayout>
+            </Frame>
 
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="200"/>
-                    </Grid.ColumnDefinitions>
-
-                    <ListView ItemsSource="{Binding CategoriesListToShow}" SeparatorVisibility="None" SelectedItem="{Binding SelectedCategory}">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <ViewCell>
-                                    <Label Text="{Binding CategoryName}"/>
-                                </ViewCell>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-
-                </Grid>
-            </Grid>
-
-            <Label Text="dsfsdfdsfosdfhdoshfosdhfsodfhsdofhofhsdofhsofhdosifhosdhf" VerticalOptions="Center"/>
-
+            <StackLayout BackgroundColor="WhiteSmoke">
+                <CollectionView ItemsSource="{Binding GroupedList}"
+                                IsGrouped="true">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Label Grid.Column="1" 
+                               Text="{Binding Name}" 
+                               FontAttributes="Bold" />
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                <CollectionView.GroupHeaderTemplate>
+                    <DataTemplate>
+                        <Label Text="{Binding Name}"
+                               BackgroundColor="LightGray"
+                               FontSize="Large"
+                               FontAttributes="Bold" />
+                    </DataTemplate>
+                </CollectionView.GroupHeaderTemplate>
+                <CollectionView.GroupFooterTemplate>
+                    <DataTemplate>
+                        <Label Text="Some text count"
+                               Margin="0,0,0,10" />
+                    </DataTemplate>
+                </CollectionView.GroupFooterTemplate>
+             </CollectionView>
+            </StackLayout>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

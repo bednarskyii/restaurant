@@ -17,26 +17,29 @@ namespace RestaurantApp.Database
         {
             path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Restaurant.db3");
             database = new SQLiteAsyncConnection(path);
-            database.CreateTableAsync<DishModel>().Wait();
             database.CreateTableAsync<CategoryModel>().Wait();
+            database.CreateTableAsync<FoodModel>().Wait();
         }
 
 
         public async Task DeleteItemByIdAsync(Guid id)
         {
-            await database.Table<DishModel>().Where(i => i.DishId == id).DeleteAsync();
+            await database.Table<FoodModel>().Where(i => i.DishId == id).DeleteAsync();
         }
 
-        public async Task<List<DishModel>> GetRecordsAsync(DishType? type = null)
+        public async Task<List<FoodModel>> GetRecordsAsync(CategoryModel type = null)
         {
             if (type != null)
-                return await database.Table<DishModel>().Where(i => i.DishType == type).ToListAsync();
+            {
+                var d = await database.Table<FoodModel>().Where(i => i.DishType == type).ToListAsync();
+                return d;
+            }
 
             else
-                return await database.Table<DishModel>().ToListAsync();
+                return await database.Table<FoodModel>().ToListAsync();
         }
 
-        public async Task SaveItemAsync(DishModel item)
+        public async Task SaveItemAsync(FoodModel item)
         {
             await database.InsertAsync(item);
         }

@@ -15,10 +15,21 @@ namespace RestaurantApp.ViewModels
         private ObservableCollection<CategoryModel> categoriesList;
         private ObservableCollection<CategoryModel> categoriesListToShow;
         private string enterCategoryName;
-        private string showHideText = "Show";
+        private string showHideText = "▼";
         private bool isListVisible;
         private CategoryModel selectedCategory;
+        private ObservableCollection<CategoryGroup> groupedList = new ObservableCollection<CategoryGroup>();
 
+        public ObservableCollection<CategoryGroup> GroupedList
+        {
+            get => groupedList;
+
+            set
+            {
+                groupedList = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GroupedList)));
+            }
+        }
         public bool IsCategoriesNoteVissible;
         public event PropertyChangedEventHandler PropertyChanged;
         public Command ShowHideCommand { get; set; }
@@ -82,7 +93,10 @@ namespace RestaurantApp.ViewModels
             {
                 categoriesList = value;
                 if(value != null)
-                   CategoriesListToShow = new ObservableCollection<CategoryModel>(value);
+                {
+                    CategoriesListToShow = new ObservableCollection<CategoryModel>(value);
+                    InitializeGroups();
+                }
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CategoriesList)));
             }
         }
@@ -105,6 +119,7 @@ namespace RestaurantApp.ViewModels
             ShowHideCommand = new Command(() => OnShowHideClicked());
 
             InitializeCategoriesList();
+
         }
 
 
@@ -127,12 +142,12 @@ namespace RestaurantApp.ViewModels
                 if(CategoriesListToShow.Count < 1)
                 {
                     IsListVisible = false;
-                    ShowHideText = "Show";
+                    ShowHideText = "▼";
                 }
                 else if (CategoriesListToShow.Count == 1 && categoriesListToShow[0].CategoryName == EnterCategoryName)
                 {
                     IsListVisible = false;
-                    ShowHideText = "Show";
+                    ShowHideText = "▼";
                 }
                 else
                 {
@@ -143,16 +158,27 @@ namespace RestaurantApp.ViewModels
 
         private void OnShowHideClicked()
         {
-            if (ShowHideText == "Show")
+            if (ShowHideText.Contains("▼"))
             {
-                ShowHideText = "Hide";
+                ShowHideText = "▲";
                 IsListVisible = true;
             }
             else
             {
                 IsListVisible = false;
-                ShowHideText = "Show";
+                ShowHideText = "▼";
             }
+        }
+
+        public async Task InitializeGroups()
+        {
+            foreach (CategoryModel category in CategoriesList)
+            {
+                List<FoodModel> dishes = await database.GetRecordsAsync(category);
+
+                GroupedList.Add(new CategoryGroup(category.CategoryName, new List<FoodModel>(dishes)));
+            }
+            
         }
 
     }

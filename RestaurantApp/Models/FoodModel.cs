@@ -1,14 +1,12 @@
 ﻿using System;
-using RestaurantApp.Enums;
-
 namespace RestaurantApp.Models
 {
-    public class DishModel
+    public class FoodModel
     {
-        public Guid DishId { set; get; } 
+        public Guid DishId { set; get; }
         public string Name { set; get; }
         public string Description { set; get; }
         public string ImageName { set; get; }
-        public DishType DishType { set; get; }
+        public CategoryModel DishType { set; get; }
     }
 }

@@ -12,12 +12,12 @@ namespace RestaurantApp.ViewModels
 {
     public class MenuPageViewModel : INotifyPropertyChanged
     {
-        private ObservableCollection<DishModel> _dishes;
+        private ObservableCollection<FoodModel> _dishes;
         private IDatabaseRepository _database;
         private DishType _selectedDishType;
 
-        private ObservableCollection<DishModel> selectedDishes;
-        public ObservableCollection<DishModel> SelectedDishes
+        private ObservableCollection<FoodModel> selectedDishes;
+        public ObservableCollection<FoodModel> SelectedDishes
         {
             get
             {
@@ -32,7 +32,7 @@ namespace RestaurantApp.ViewModels
 
         public List<string> DishTypes { get; set; }
 
-        public ObservableCollection<DishModel> Dishes
+        public ObservableCollection<FoodModel> Dishes
         {
             get => _dishes;
 
@@ -67,9 +67,9 @@ namespace RestaurantApp.ViewModels
 
         public async Task InitializeDishesList(DishType type)
         {
-            Dishes = new ObservableCollection<DishModel>(await _database.GetRecordsAsync());
+            Dishes = new ObservableCollection<FoodModel>(await _database.GetRecordsAsync());
 
-            SelectedDishes = new ObservableCollection<DishModel>()
+            SelectedDishes = new ObservableCollection<FoodModel>()
             {
                 Dishes[1], Dishes[3]
             };
