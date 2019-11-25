@@ -7,6 +7,6 @@ namespace RestaurantApp.Models
         public string Name { set; get; }
         public string Description { set; get; }
         public string ImageName { set; get; }
-        public CategoryModel DishType { set; get; }
+        public Guid DishTypeId { set; get; }
     }
 }

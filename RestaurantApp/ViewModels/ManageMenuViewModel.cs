@@ -18,7 +18,44 @@ namespace RestaurantApp.ViewModels
         private string showHideText = "▼";
         private bool isListVisible;
         private CategoryModel selectedCategory;
-        private ObservableCollection<CategoryGroup> groupedList = new ObservableCollection<CategoryGroup>();
+        private ObservableCollection<CategoryGroup> groupedList;
+        private string newFoodName;
+        private string newFoodDescription;
+        private bool isEditingButonVissible;
+
+        public FoodModel SelectedFood { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
+        public Command ShowHideCommand { get; set; }
+        public Command AddNewFood { get; set; }
+        public Command EditFood { get; set; }
+        public Command DeleteFood { get; set; }
+        public Command CancelEdit { get; set; }
+        public Command SaveEdit { get; set; }
+        
+
+
+        public string NewFoodName
+        {
+            get => newFoodName;
+
+            set
+            {
+                newFoodName = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NewFoodName)));
+            }
+        }
+
+        public string NewFoodDescription
+        {
+            get => newFoodDescription;
+
+            set
+            {
+                newFoodDescription = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NewFoodDescription)));
+            }
+        }
+
 
         public ObservableCollection<CategoryGroup> GroupedList
         {
@@ -30,9 +67,6 @@ namespace RestaurantApp.ViewModels
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GroupedList)));
             }
         }
-        public bool IsCategoriesNoteVissible;
-        public event PropertyChangedEventHandler PropertyChanged;
-        public Command ShowHideCommand { get; set; }
 
         public CategoryModel SelectedCategory
         {
@@ -40,7 +74,7 @@ namespace RestaurantApp.ViewModels
 
             set
             {
-                if(value != null)
+                if (value != null)
                 {
                     selectedCategory = value;
                     IsListVisible = false;
@@ -60,7 +94,18 @@ namespace RestaurantApp.ViewModels
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsListVisible)));
             }
         }
-        
+
+        public bool IsEditingButonVissible
+        {
+            get => isEditingButonVissible;
+
+            set
+            {
+                isEditingButonVissible = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsEditingButonVissible)));
+            }
+        }
+
 
         public string ShowHideText
         {
@@ -92,7 +137,7 @@ namespace RestaurantApp.ViewModels
             set
             {
                 categoriesList = value;
-                if(value != null)
+                if (value != null)
                 {
                     CategoriesListToShow = new ObservableCollection<CategoryModel>(value);
                     InitializeGroups();
@@ -117,15 +162,21 @@ namespace RestaurantApp.ViewModels
         {
             database = new DatabaseRepository();
             ShowHideCommand = new Command(() => OnShowHideClicked());
+            AddNewFood = new Command(() => OnAddNewFoodClicked());
+            EditFood = new Command(() => OnEditFoodClicked());
+            DeleteFood = new Command(() => OnDeleteFoodClicked());
+            CancelEdit = new Command(() => OnCancelEditClicked());
+            SaveEdit = new Command(() => OnSaveEditClicked());
 
             InitializeCategoriesList();
 
         }
 
 
-        private async Task InitializeCategoriesList()
+        public async Task InitializeCategoriesList()
         {
             CategoriesList = new ObservableCollection<CategoryModel>(await database.GetCategory());
+            GroupedList = new ObservableCollection<CategoryGroup>();
         }
 
         private void CategoryNameListConsist()
@@ -133,13 +184,13 @@ namespace RestaurantApp.ViewModels
             CategoriesListToShow = new ObservableCollection<CategoryModel>(CategoriesList);
             if (!string.IsNullOrEmpty(EnterCategoryName))
             {
-                foreach(CategoryModel category in CategoriesList)
+                foreach (CategoryModel category in CategoriesList)
                 {
                     if (!category.CategoryName.Contains(EnterCategoryName) && CategoriesListToShow.Contains(category))
                         CategoriesListToShow.Remove(category);
                 }
 
-                if(CategoriesListToShow.Count < 1)
+                if (CategoriesListToShow.Count < 1)
                 {
                     IsListVisible = false;
                     ShowHideText = "▼";
@@ -156,10 +207,11 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        private void OnShowHideClicked()
+        private async Task OnShowHideClicked()
         {
             if (ShowHideText.Contains("▼"))
             {
+                await InitializeCategoriesList();
                 ShowHideText = "▲";
                 IsListVisible = true;
             }
@@ -170,15 +222,63 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+        private async Task OnAddNewFoodClicked()
+        {
+            await database.SaveItemAsync(new FoodModel { DishId = Guid.NewGuid(), Name = NewFoodName, Description = NewFoodDescription, DishTypeId = SelectedCategory.CategoryId });
+            await InitializeGroups();
+
+            NewFoodName = null;
+            NewFoodDescription = null;
+            SelectedCategory = null;
+        }
+
         public async Task InitializeGroups()
         {
+            List<CategoryGroup> groupList = new List<CategoryGroup>();
+
             foreach (CategoryModel category in CategoriesList)
             {
-                List<FoodModel> dishes = await database.GetRecordsAsync(category);
+                List<FoodModel> dishes = await database.GetRecordsAsync(category.CategoryId);
 
-                GroupedList.Add(new CategoryGroup(category.CategoryName, new List<FoodModel>(dishes)));
+                groupList.Add(new CategoryGroup(category.CategoryName, new List<FoodModel>(dishes)));
             }
-            
+
+            GroupedList = new ObservableCollection<CategoryGroup>(groupList);
+        }
+
+        private async Task OnDeleteFoodClicked()
+        {
+            await database.DeleteItemByIdAsync(SelectedFood.DishId);
+            SelectedFood = null;
+            await InitializeGroups();
+        }
+
+        private async Task OnEditFoodClicked()
+        {
+            IsEditingButonVissible = true;
+
+            NewFoodDescription = SelectedFood.Description;
+            NewFoodName = SelectedFood.Name;
+            List<CategoryModel> category = await database.GetCategory(SelectedFood.DishTypeId);
+            SelectedCategory = category[0];
+        }
+
+        private void OnCancelEditClicked()
+        {
+            IsEditingButonVissible = false;
+
+            NewFoodDescription = null;
+            NewFoodName = null;
+            SelectedCategory = null;
+            EnterCategoryName = null;
+        }
+
+        private async Task OnSaveEditClicked()
+        {
+            await database.DeleteItemByIdAsync(SelectedFood.DishId);
+            await OnAddNewFoodClicked();
+            EnterCategoryName = null;
+            IsEditingButonVissible = false;
         }
 
     }

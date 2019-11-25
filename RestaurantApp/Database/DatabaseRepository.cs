@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using RestaurantApp.Enums;
 using RestaurantApp.Models;
 using SQLite;
 
@@ -27,11 +26,11 @@ namespace RestaurantApp.Database
             await database.Table<FoodModel>().Where(i => i.DishId == id).DeleteAsync();
         }
 
-        public async Task<List<FoodModel>> GetRecordsAsync(CategoryModel type = null)
+        public async Task<List<FoodModel>> GetRecordsAsync(Guid? type = null)
         {
             if (type != null)
             {
-                var d = await database.Table<FoodModel>().Where(i => i.DishType == type).ToListAsync();
+                var d = await database.Table<FoodModel>().Where(i => i.DishTypeId == type).ToListAsync();
                 return d;
             }
 
@@ -41,7 +40,8 @@ namespace RestaurantApp.Database
 
         public async Task SaveItemAsync(FoodModel item)
         {
-            await database.InsertAsync(item);
+            if(!string.IsNullOrEmpty(item.Name))
+                await database.InsertAsync(item);
         }
 
         public async Task AddCategory(string Name)
@@ -49,12 +49,17 @@ namespace RestaurantApp.Database
             int count = await database.Table<CategoryModel>().Where(i => i.CategoryName == Name).CountAsync();
 
             if (count == 0 && !string.IsNullOrEmpty(Name))
-            await database.InsertAsync(new CategoryModel { CategoryId = Guid.NewGuid(), CategoryName = Name});
+                await database.InsertAsync(new CategoryModel { CategoryId = Guid.NewGuid(), CategoryName = Name});
         }
 
         public async Task<List<CategoryModel>> GetCategory(Guid? id = null)
         {
-            return await database.Table<CategoryModel>().ToListAsync();
+            if(id == null)
+                return await database.Table<CategoryModel>().ToListAsync();
+            else
+            {
+                return await database.Table<CategoryModel>().Where(i => i.CategoryId == id).ToListAsync();
+            }
         }
 
         public async Task DeleteCategory(Guid id)

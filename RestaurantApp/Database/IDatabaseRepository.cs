@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using RestaurantApp.Enums;
 using RestaurantApp.Models;
 
 namespace RestaurantApp.Database
 {
     public interface IDatabaseRepository
     {
-        Task<List<FoodModel>> GetRecordsAsync(CategoryModel type = null);
+        Task<List<FoodModel>> GetRecordsAsync(Guid? type = null);
         Task SaveItemAsync(FoodModel item);
         Task DeleteItemByIdAsync(Guid id);
 
