@@ -16,7 +16,9 @@
     <Folder Include="ViewModels\" />
     <Folder Include="CustomControlls\" />
     <Folder Include="Models\" />
-    <Folder Include="Enums\" />
     <Folder Include="Database\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Enums\DishType.cs" />
   </ItemGroup>
 </Project>

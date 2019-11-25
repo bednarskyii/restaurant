@@ -211,7 +211,6 @@ namespace RestaurantApp.ViewModels
         {
             if (ShowHideText.Contains("▼"))
             {
-                await InitializeCategoriesList();
                 ShowHideText = "▲";
                 IsListVisible = true;
             }

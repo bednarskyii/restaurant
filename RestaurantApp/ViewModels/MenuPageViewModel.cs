@@ -5,52 +5,48 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using RestaurantApp.Database;
-using RestaurantApp.Enums;
 using RestaurantApp.Models;
 
 namespace RestaurantApp.ViewModels
 {
     public class MenuPageViewModel : INotifyPropertyChanged
     {
-        private ObservableCollection<FoodModel> _dishes;
+        private ObservableCollection<FoodModel> dishes;
+        private ObservableCollection<CategoryModel> categories;
         private IDatabaseRepository _database;
-        private DishType _selectedDishType;
+        private CategoryModel selectedCategory;
 
-        private ObservableCollection<FoodModel> selectedDishes;
-        public ObservableCollection<FoodModel> SelectedDishes
+        public CategoryModel SelectedCategory
         {
-            get
-            {
-                return selectedDishes;
-            }
+            get => selectedCategory;
+
             set
             {
-                selectedDishes = value;
+                selectedCategory = value;
+                InitializeDishesList(selectedCategory);
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedCategory)));
             }
         }
 
-
-        public List<string> DishTypes { get; set; }
-
         public ObservableCollection<FoodModel> Dishes
         {
-            get => _dishes;
+            get => dishes;
 
             set
             {
-                _dishes = value;
+                dishes = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Dishes))); 
             }
         }
 
-        public DishType SelectedDish
+        public ObservableCollection<CategoryModel> Categories
         {
-            get => _selectedDishType;
+            get => categories;
 
             set
             {
-                _selectedDishType = value;
-                //InitializeDishesList(_selectedDishType);
+                categories = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Categories)));
             }
         }
 
@@ -59,20 +55,19 @@ namespace RestaurantApp.ViewModels
         public MenuPageViewModel()
         {
             _database = new DatabaseRepository();
-            var listTypes = Enum.GetNames(typeof(DishType)).ToList();
-            DishTypes = new List<string>(listTypes);
 
-            InitializeDishesList(DishType.Pizza);
+            InitializeCategories();
+            InitializeDishesList(null);
         }
 
-        public async Task InitializeDishesList(DishType type)
+        public async Task InitializeDishesList(CategoryModel category)
         {
-            Dishes = new ObservableCollection<FoodModel>(await _database.GetRecordsAsync());
+            Dishes = new ObservableCollection<FoodModel>(await _database.GetRecordsAsync(category.CategoryId));
+        }
 
-            SelectedDishes = new ObservableCollection<FoodModel>()
-            {
-                Dishes[1], Dishes[3]
-            };
+        public async Task InitializeCategories()
+        {
+            Categories = new ObservableCollection<CategoryModel>(await _database.GetCategory());
         }
     }
 }
