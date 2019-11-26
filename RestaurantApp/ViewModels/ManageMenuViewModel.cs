@@ -20,6 +20,7 @@ namespace RestaurantApp.ViewModels
         private CategoryModel selectedCategory;
         private ObservableCollection<CategoryGroup> groupedList;
         private string newFoodName;
+        private decimal? newPrice;
         private string newFoodDescription;
         private bool isEditingButonVissible;
 
@@ -31,8 +32,30 @@ namespace RestaurantApp.ViewModels
         public Command DeleteFood { get; set; }
         public Command CancelEdit { get; set; }
         public Command SaveEdit { get; set; }
-        
 
+        public ManageMenuViewModel()
+        {
+            database = new DatabaseRepository();
+            ShowHideCommand = new Command(() => OnShowHideClicked());
+            AddNewFood = new Command(() => OnAddNewFoodClicked());
+            EditFood = new Command(() => OnEditFoodClicked());
+            DeleteFood = new Command(() => OnDeleteFoodClicked());
+            CancelEdit = new Command(() => OnCancelEditClicked());
+            SaveEdit = new Command(() => OnSaveEditClicked());
+
+            InitializeCategoriesList();
+        }
+
+        public decimal? NewPrice
+        {
+            get => newPrice;
+
+            set
+            {
+                newPrice = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NewPrice)));
+            }
+        }
 
         public string NewFoodName
         {
@@ -158,21 +181,6 @@ namespace RestaurantApp.ViewModels
         }
 
 
-        public ManageMenuViewModel()
-        {
-            database = new DatabaseRepository();
-            ShowHideCommand = new Command(() => OnShowHideClicked());
-            AddNewFood = new Command(() => OnAddNewFoodClicked());
-            EditFood = new Command(() => OnEditFoodClicked());
-            DeleteFood = new Command(() => OnDeleteFoodClicked());
-            CancelEdit = new Command(() => OnCancelEditClicked());
-            SaveEdit = new Command(() => OnSaveEditClicked());
-
-            InitializeCategoriesList();
-
-        }
-
-
         public async Task InitializeCategoriesList()
         {
             CategoriesList = new ObservableCollection<CategoryModel>(await database.GetCategory());
@@ -223,12 +231,13 @@ namespace RestaurantApp.ViewModels
 
         private async Task OnAddNewFoodClicked()
         {
-            await database.SaveItemAsync(new FoodModel { DishId = Guid.NewGuid(), Name = NewFoodName, Description = NewFoodDescription, DishTypeId = SelectedCategory.CategoryId });
+            await database.SaveItemAsync(new FoodModel { DishId = Guid.NewGuid(), Name = NewFoodName, Description = NewFoodDescription, DishTypeId = SelectedCategory.CategoryId, Price = NewPrice });
             await InitializeGroups();
 
             NewFoodName = null;
             NewFoodDescription = null;
             SelectedCategory = null;
+            NewPrice = null;
         }
 
         public async Task InitializeGroups()
@@ -260,6 +269,7 @@ namespace RestaurantApp.ViewModels
             NewFoodName = SelectedFood.Name;
             List<CategoryModel> category = await database.GetCategory(SelectedFood.DishTypeId);
             SelectedCategory = category[0];
+            NewPrice = SelectedFood.Price;
         }
 
         private void OnCancelEditClicked()
@@ -270,6 +280,7 @@ namespace RestaurantApp.ViewModels
             NewFoodName = null;
             SelectedCategory = null;
             EnterCategoryName = null;
+            NewPrice = null;
         }
 
         private async Task OnSaveEditClicked()
@@ -279,6 +290,5 @@ namespace RestaurantApp.ViewModels
             EnterCategoryName = null;
             IsEditingButonVissible = false;
         }
-
     }
 }

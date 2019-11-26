@@ -40,6 +40,7 @@ namespace RestaurantApp.Database
 
         public async Task SaveItemAsync(FoodModel item)
         {
+            item.Count = 1; //default Value for dishes
             if(!string.IsNullOrEmpty(item.Name))
                 await database.InsertAsync(item);
         }

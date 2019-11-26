@@ -8,5 +8,7 @@ namespace RestaurantApp.Models
         public string Description { set; get; }
         public string ImageName { set; get; }
         public Guid DishTypeId { set; get; }
+        public decimal? Price { set; get; }
+        public int Count { set; get; }
     }
 }

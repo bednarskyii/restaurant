@@ -15,14 +15,16 @@
 
                         <Grid Grid.Row="0">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="0.5*"/>
+                                <ColumnDefinition Width="0.3*"/>
+                                <ColumnDefinition Width="0.2*"/>
                                 <ColumnDefinition Width="0.2*"/>
                                 <ColumnDefinition Width="0.3*"/>
                             </Grid.ColumnDefinitions>
 
-                            <Entry Placeholder="Enter name" Grid.Column="0" Text="{Binding NewFoodName}"/>
-                            <Button Text="Image" Grid.Column="1"/>
-                                <Grid Grid.Column="2" Padding="0" WidthRequest="210" HorizontalOptions="End">
+                            <Entry Grid.Column="0" Placeholder="Enter name" Text="{Binding NewFoodName}"/>
+                            <Entry Grid.Column="1" Placeholder="Enter price" Text="{Binding NewPrice}"/>
+                            <Button Grid.Column="2" Text="Image" />
+                                <Grid Grid.Column="3" Padding="0" WidthRequest="210" HorizontalOptions="End">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="160"/>
                                         <ColumnDefinition Width="60"/>

@@ -4,74 +4,94 @@
              x:Class="RestaurantApp.Pages.MenuPage"
              xmlns:local="clr-namespace:RestaurantApp.CustomControlls;assembly=RestaurantApp">
     <ContentPage.Content>
-        <Grid RowSpacing="0">
+        <Grid RowSpacing="0" Margin="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="0.10*"/>
                 <RowDefinition Height="0.05*"/>
-                <RowDefinition Height="0.85*"/>
+                <RowDefinition Height="0.05*"/>
+                <RowDefinition Height="0.90*"/>
             </Grid.RowDefinitions>
 
-            <StackLayout Grid.Row="0" BackgroundColor="Black" Margin="0">
-                <Label Text="RestaurantName" TextColor="White" FontAttributes="Bold" FontSize="30" Margin="30,5,5,5"/>      
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.7*"/>
+                <ColumnDefinition Width="0.3*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackLayout Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="Black" Margin="0" Orientation="Horizontal">
+                <Label Text="Agileo Restaurant" TextColor="White" FontAttributes="Bold" FontSize="30" Margin="30,5,5,5"/>
+                <StackLayout Orientation="Horizontal" HorizontalOptions="EndAndExpand" Margin="5" VerticalOptions="Center">
+                    <Label Text="{Binding TotalCost}" FontSize="30" TextColor="White" FontAttributes="Bold"/>
+                    <Label Text="UAH - order price" TextColor="White" VerticalOptions="Center"/>
+                </StackLayout>
             </StackLayout>
 
-                <CollectionView Grid.Row="1"
-                                ItemsSource="{Binding Categories}"
-                                ItemsLayout="HorizontalList"
-                                HorizontalOptions="CenterAndExpand"
-                                BackgroundColor="White"
-                                SelectionMode="Single"
-                                SelectedItem="{Binding SelectedCategory}">
+            <CollectionView Grid.Row="1"
+                            Grid.Column="0"
+                            ItemsSource="{Binding Categories}"
+                            ItemsLayout="HorizontalList"
+                            HorizontalOptions="CenterAndExpand"
+                            BackgroundColor="White"
+                            SelectionMode="Single"
+                            SelectedItem="{Binding SelectedCategory}">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Label Padding="5" Text="{Binding CategoryName}" FontAttributes="Bold" FontSize="20"/>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
-                </CollectionView>
+            </CollectionView>
 
-            <Grid Grid.Row="2" BackgroundColor="White">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0.7*"/>
-                    <ColumnDefinition Width="0.3*"/>
-                </Grid.ColumnDefinitions>
-
-                <CollectionView VerticalOptions="Start"
-                                Grid.Column="0"
-                                Margin="20"
-                                ItemsSource="{Binding Dishes}"
-                                BackgroundColor="White">
-                    <CollectionView.ItemsLayout>
-                        <GridItemsLayout Orientation="Vertical" Span="2" VerticalItemSpacing="20" HorizontalItemSpacing="20"/>
-                    </CollectionView.ItemsLayout>
-
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <StackLayout Padding="10">
-                                <Frame WidthRequest="50" HasShadow="True">
-                                    <StackLayout HeightRequest="100" WidthRequest="100" BackgroundColor="White">
-                                        <Label Text="{Binding Name}"/>
-                                    </StackLayout>
-
-                                    <Frame.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding CommandItemSelected}" CommandParameter="{Binding .}"/>
-                                    </Frame.GestureRecognizers>
-                                </Frame>
-                            </StackLayout>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-
-                <ListView Grid.Column="1" ItemsSource="{Binding SelectedDishes}" Margin="20" HasUnevenRows="False">
+            <StackLayout Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" BackgroundColor="Black" Margin="0">
+                <Button Margin="0,2,0,0" Text="Make order" FontSize="20" FontAttributes="Bold" TextColor="White"/>
+                <ListView ItemsSource="{Binding OrderedFoodList}"
+                          Margin="3,0,0,0"
+                          SeparatorVisibility="None"
+                          SelectedItem="{Binding SelectedFoodFromOrder}">
                     <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <ViewCell>
-                               <Label Margin="15" Text="{Binding Name}"/>
-                            </ViewCell>
-                        </DataTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <StackLayout Orientation="Vertical">
+                                       <Label Text="{Binding Name}" HorizontalOptions="CenterAndExpand" FontAttributes="Bold"/>
+                                           <StackLayout Orientation="Horizontal" Margin="5,0,0,0">
+                                               <Label Text="items: "/>
+                                               <Label Text="{Binding Count}"/>
+                                               <Label Text="price: "/>
+                                               <Label Text="{Binding Price}"/>
+                                           </StackLayout>
+                                    </StackLayout>
+                                </ViewCell>
+                            </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
+                <StackLayout Orientation="Horizontal" Margin="3,0,0,0" BackgroundColor="White">
+                    <Button Command="{Binding PlusItemInOrder}" Text="+" FontSize="30" TextColor="Black" HorizontalOptions="CenterAndExpand"/>
+                    <Label Text="{Binding SelectedFoodFromOrder.Name}" Margin="2"/>
+                    <Button Command="{Binding MinusItemInOrder}" Text="-" FontSize="30" TextColor="Black" HorizontalOptions="CenterAndExpand"/>
+                </StackLayout>
+                <Button Text="Delete food" Command="{Binding DeleteFoodFromOrder}" TextColor="White"/>
 
-            </Grid>
+            </StackLayout>
+
+                    <CollectionView Grid.Row="2"
+                                    Grid.Column="0"
+                                    VerticalOptions="Start"
+                                    Margin="20"
+                                    ItemsSource="{Binding Dishes}"
+                                    BackgroundColor="White"
+                                    SelectionMode="Single"
+                                    SelectedItem="{Binding SelectedFood}">
+                        <CollectionView.ItemsLayout>
+                            <GridItemsLayout Orientation="Vertical" Span="2" VerticalItemSpacing="20" HorizontalItemSpacing="20"/>
+                        </CollectionView.ItemsLayout>
+
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <StackLayout Padding="2">
+                                    <Frame Margin="10" HeightRequest="150" HasShadow="True" CornerRadius="90">
+                                        <Label Text="{Binding Name}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
+                                    </Frame>
+                                </StackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
        
         </Grid>
     </ContentPage.Content>

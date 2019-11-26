@@ -6,7 +6,20 @@
     <ContentPage.Content>
         <StackLayout Margin="20" >
             <Entry Placeholder="Enter new category name" Text="{Binding NewCategoryName}"/>
-            <Button Text="Add categoty" Command="{Binding AddCategory}"/>
+            <Grid>
+                <Button Text="Add categoty" Command="{Binding AddCategory}"/>
+                <Grid BackgroundColor="White"
+                      IsVisible="{Binding IsEditingButonVissible}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Text="Save" Grid.Column="0" Command="{Binding SaveEdited}"/>
+                        <Button Text="Cancel" Grid.Column="1" TextColor="Red" Command="{Binding CancelEdited}"/>
+                </Grid>
+            </Grid>
+
             <Label Text="List of categories:" FontAttributes="Bold"/>
                 <ListView ItemsSource="{Binding CategoriesList}"
                           Margin="0"
@@ -28,7 +41,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <Button Text="Edit category" Grid.Column="0"/>
+                <Button Text="Edit category" Command="{Binding EditCategory}" Grid.Column="0"/>
                 <Button Text="Delete category" TextColor="Red" Grid.Column="1" Command="{Binding DeleteCategory}"/>
             </Grid>
         </StackLayout>
