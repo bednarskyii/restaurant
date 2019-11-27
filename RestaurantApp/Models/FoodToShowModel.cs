@@ -1,15 +1,15 @@
 ﻿using System;
+using Xamarin.Forms;
+
 namespace RestaurantApp.Models
 {
-    public class FoodModel
+    public class FoodToShowModel
     {
-        public Guid DishId { set; get; }
         public string Name { set; get; }
         public string Description { set; get; }
-        public string ImageName { set; get; }
-        public Guid DishTypeId { set; get; }
         public decimal? Price { set; get; }
         public int Count { set; get; }
-        public int PhotoId { set; get; }
+
+        public ImageSource PhotoSource { get; set; }
     }
 }

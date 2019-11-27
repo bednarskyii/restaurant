@@ -17,14 +17,18 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="0.3*"/>
                                 <ColumnDefinition Width="0.2*"/>
-                                <ColumnDefinition Width="0.2*"/>
+                                <ColumnDefinition Width="0.1*"/>
+                                <ColumnDefinition Width="0.1*"/>
                                 <ColumnDefinition Width="0.3*"/>
                             </Grid.ColumnDefinitions>
 
                             <Entry Grid.Column="0" Placeholder="Enter name" Text="{Binding NewFoodName}"/>
                             <Entry Grid.Column="1" Placeholder="Enter price" Text="{Binding NewPrice}"/>
-                            <Button Grid.Column="2" Text="Image" />
-                                <Grid Grid.Column="3" Padding="0" WidthRequest="210" HorizontalOptions="End">
+
+                            <Image Grid.Column="2" Source="{Binding NewImageSource}"/>
+                            <Button Grid.Column="3"  Command="{Binding ChooseImage}" Text="Image" />
+
+                                <Grid Grid.Column="4" Padding="0" WidthRequest="210" HorizontalOptions="End">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="160"/>
                                         <ColumnDefinition Width="60"/>
@@ -61,8 +65,8 @@
                             <ListView ItemsSource="{Binding CategoriesListToShow}" SeparatorVisibility="None" SelectedItem="{Binding SelectedCategory}">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
-                                        <ViewCell>
-                                            <Label Text="{Binding CategoryName}" BackgroundColor="White" Padding="5" FontAttributes="Bold"/>
+                                        <ViewCell>     
+                                            <Label Grid.Row="1" Text="{Binding CategoryName}" BackgroundColor="White" Padding="5" FontAttributes="Bold"/>
                                         </ViewCell>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
@@ -110,7 +114,6 @@
                         </DataTemplate>
                     </CollectionView.GroupFooterTemplate>
                 </CollectionView>
-
             </StackLayout>
         </StackLayout>
     </ContentPage.Content>

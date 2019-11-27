@@ -14,5 +14,9 @@ namespace RestaurantApp.Database
         Task AddCategory(string name);
         Task<List<CategoryModel>> GetCategory(Guid? id = null);
         Task DeleteCategory(Guid id);
+
+        Task AddPhoto(FoodPhotoModel foodPhoto);
+        Task<List<FoodPhotoModel>> GetPhoto(int id);
+        Task DeletePhoto(int id);
     }
 }

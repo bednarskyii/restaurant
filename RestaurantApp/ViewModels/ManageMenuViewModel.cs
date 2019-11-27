@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Threading.Tasks;
 using RestaurantApp.Database;
+using RestaurantApp.DependencyServices;
 using RestaurantApp.Models;
 using Xamarin.Forms;
 
@@ -12,6 +14,7 @@ namespace RestaurantApp.ViewModels
     public class ManageMenuViewModel : INotifyPropertyChanged
     {
         private IDatabaseRepository database;
+        private IPhotoPickerService photoPicker;
         private ObservableCollection<CategoryModel> categoriesList;
         private ObservableCollection<CategoryModel> categoriesListToShow;
         private string enterCategoryName;
@@ -23,6 +26,8 @@ namespace RestaurantApp.ViewModels
         private decimal? newPrice;
         private string newFoodDescription;
         private bool isEditingButonVissible;
+        private byte[] foodImageByteArray;
+        private ImageSource newImageSource;
 
         public FoodModel SelectedFood { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
@@ -32,9 +37,11 @@ namespace RestaurantApp.ViewModels
         public Command DeleteFood { get; set; }
         public Command CancelEdit { get; set; }
         public Command SaveEdit { get; set; }
+        public Command ChooseImage { get; set; }
 
         public ManageMenuViewModel()
         {
+            photoPicker = DependencyService.Get<IPhotoPickerService>();
             database = new DatabaseRepository();
             ShowHideCommand = new Command(() => OnShowHideClicked());
             AddNewFood = new Command(() => OnAddNewFoodClicked());
@@ -42,6 +49,7 @@ namespace RestaurantApp.ViewModels
             DeleteFood = new Command(() => OnDeleteFoodClicked());
             CancelEdit = new Command(() => OnCancelEditClicked());
             SaveEdit = new Command(() => OnSaveEditClicked());
+            ChooseImage = new Command(() => OnChooseImageClicked());
 
             InitializeCategoriesList();
         }
@@ -54,6 +62,17 @@ namespace RestaurantApp.ViewModels
             {
                 newPrice = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NewPrice)));
+            }
+        }
+
+        public ImageSource NewImageSource
+        {
+            get => newImageSource;
+
+            set
+            {
+                newImageSource = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NewImageSource)));
             }
         }
 
@@ -215,7 +234,7 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        private async Task OnShowHideClicked()
+        private void OnShowHideClicked()
         {
             if (ShowHideText.Contains("▼"))
             {
@@ -229,15 +248,23 @@ namespace RestaurantApp.ViewModels
             }
         }
 
+
         private async Task OnAddNewFoodClicked()
         {
-            await database.SaveItemAsync(new FoodModel { DishId = Guid.NewGuid(), Name = NewFoodName, Description = NewFoodDescription, DishTypeId = SelectedCategory.CategoryId, Price = NewPrice });
+            //not a best practice with random
+            Random rand = new Random();
+            int randomId = rand.Next(0, 1000);
+            FoodPhotoModel newImage = new FoodPhotoModel { PhotoId = randomId, PhotoByteData = foodImageByteArray };
+            await database.AddPhoto(newImage);
+
+            await database.SaveItemAsync(new FoodModel { DishId = Guid.NewGuid(), PhotoId = randomId, Name = NewFoodName, Description = NewFoodDescription, DishTypeId = SelectedCategory.CategoryId, Price = NewPrice });
             await InitializeGroups();
 
             NewFoodName = null;
             NewFoodDescription = null;
             SelectedCategory = null;
             NewPrice = null;
+            NewImageSource = null;
         }
 
         public async Task InitializeGroups()
@@ -270,6 +297,13 @@ namespace RestaurantApp.ViewModels
             List<CategoryModel> category = await database.GetCategory(SelectedFood.DishTypeId);
             SelectedCategory = category[0];
             NewPrice = SelectedFood.Price;
+
+            List<FoodPhotoModel> foodPhoto = await database.GetPhoto(SelectedFood.PhotoId);
+            if(foodPhoto != null)
+            {
+                foodImageByteArray = foodPhoto[0].PhotoByteData;
+                NewImageSource = ImageSource.FromStream(() => new MemoryStream(foodImageByteArray));
+            }
         }
 
         private void OnCancelEditClicked()
@@ -281,14 +315,34 @@ namespace RestaurantApp.ViewModels
             SelectedCategory = null;
             EnterCategoryName = null;
             NewPrice = null;
+            NewImageSource = null;
         }
 
         private async Task OnSaveEditClicked()
         {
             await database.DeleteItemByIdAsync(SelectedFood.DishId);
+            await database.DeletePhoto(SelectedFood.PhotoId);
             await OnAddNewFoodClicked();
             EnterCategoryName = null;
             IsEditingButonVissible = false;
+        }
+
+        private async Task OnChooseImageClicked()
+        {
+            var image = await photoPicker.GetImageStreamAsync();
+
+            byte[] buffer = new byte[16 * 1024];
+            using (MemoryStream ms = new MemoryStream())
+            {
+                int read;
+                while ((read = image.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    ms.Write(buffer, 0, read);
+                }
+                foodImageByteArray = ms.ToArray();
+            }
+
+            NewImageSource = ImageSource.FromStream(() => new MemoryStream(foodImageByteArray));
         }
     }
 }

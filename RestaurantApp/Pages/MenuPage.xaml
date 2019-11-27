@@ -86,7 +86,19 @@
                             <DataTemplate>
                                 <StackLayout Padding="2">
                                     <Frame Margin="10" HeightRequest="150" HasShadow="True" CornerRadius="90">
-                                        <Label Text="{Binding Name}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="0.50*"/>
+                                                <RowDefinition Height="0.15*"/>
+                                                <RowDefinition Height="0.15*"/>
+                                                <RowDefinition Height="0.20*"/>
+                                            </Grid.RowDefinitions>
+
+                                            <Image Grid.Row="0" Source="{Binding PhotoSource}"/>
+                                            <Label Grid.Row="1" FontAttributes="Bold" Text="{Binding Name}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
+                                            <Label Grid.Row="2" Text="{Binding Description}" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" Margin="5,1,1,1"/>
+                                            <Label Grid.Row="3" FontAttributes="Bold" Text="{Binding Price}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
+                                        </Grid>
                                     </Frame>
                                 </StackLayout>
                             </DataTemplate>

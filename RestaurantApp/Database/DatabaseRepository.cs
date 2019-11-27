@@ -18,6 +18,7 @@ namespace RestaurantApp.Database
             database = new SQLiteAsyncConnection(path);
             database.CreateTableAsync<CategoryModel>().Wait();
             database.CreateTableAsync<FoodModel>().Wait();
+            database.CreateTableAsync<FoodPhotoModel>().Wait();
         }
 
 
@@ -66,6 +67,21 @@ namespace RestaurantApp.Database
         public async Task DeleteCategory(Guid id)
         {
             await database.Table<CategoryModel>().Where(i => i.CategoryId == id).DeleteAsync();
+        }
+
+        public async Task AddPhoto(FoodPhotoModel photo)
+        {
+            await database.InsertAsync(photo);
+        }
+
+        public async Task<List<FoodPhotoModel>> GetPhoto(int id)
+        {
+            return await database.Table<FoodPhotoModel>().Where(i => i.PhotoId == id).ToListAsync();
+        }
+
+        public async Task DeletePhoto(int id)
+        {
+            await database.Table<FoodPhotoModel>().Where(i => i.PhotoId == id).DeleteAsync();
         }
     }
 }

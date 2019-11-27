@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Threading.Tasks;
 using RestaurantApp.Database;
 using RestaurantApp.Models;
@@ -11,15 +12,15 @@ namespace RestaurantApp.ViewModels
 {
     public class MenuPageViewModel : INotifyPropertyChanged
     {
-        private ObservableCollection<FoodModel> dishes;
+        private ObservableCollection<FoodToShowModel> dishes;
         private ObservableCollection<CategoryModel> categories;
         private IDatabaseRepository _database;
         private CategoryModel selectedCategory;
-        private FoodModel selectedFood;
-        private List<FoodModel> itemsToOrder = new List<FoodModel>();
-        private ObservableCollection<FoodModel> orderedFoodList;
+        private FoodToShowModel selectedFood;
+        private List<FoodToShowModel> itemsToOrder = new List<FoodToShowModel>();
+        private ObservableCollection<FoodToShowModel> orderedFoodList;
         private decimal? totalCost = 0;
-        private FoodModel selectedFoodFromOrder;
+        private FoodToShowModel selectedFoodFromOrder;
 
         public Command PlusItemInOrder { get; set; }
         public Command MinusItemInOrder { get; set; }
@@ -38,7 +39,7 @@ namespace RestaurantApp.ViewModels
             InitializeDishesList(null);
         }
 
-        public FoodModel SelectedFoodFromOrder
+        public FoodToShowModel SelectedFoodFromOrder
         {
             get => selectedFoodFromOrder;
 
@@ -60,7 +61,7 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public ObservableCollection<FoodModel> OrderedFoodList
+        public ObservableCollection<FoodToShowModel> OrderedFoodList
         {
             get => orderedFoodList;
             set
@@ -70,7 +71,7 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public FoodModel SelectedFood
+        public FoodToShowModel SelectedFood
         {
             get => selectedFood;
 
@@ -94,7 +95,7 @@ namespace RestaurantApp.ViewModels
             }
         }
 
-        public ObservableCollection<FoodModel> Dishes
+        public ObservableCollection<FoodToShowModel> Dishes
         {
             get => dishes;
 
@@ -118,7 +119,29 @@ namespace RestaurantApp.ViewModels
 
         public async Task InitializeDishesList(CategoryModel category)
         {
-            Dishes = new ObservableCollection<FoodModel>(await _database.GetRecordsAsync(category.CategoryId));
+            List<FoodModel> foosList = await _database.GetRecordsAsync(category.CategoryId);
+            List<FoodToShowModel> showFoodList = new List<FoodToShowModel>();
+
+            foreach (FoodModel food in foosList)
+            {
+                ImageSource imageSource = null;
+
+                List<FoodPhotoModel> foodPhoto = await _database.GetPhoto(food.PhotoId);
+                if (foodPhoto.Count > 0)
+                {
+                    var foodImageByteArray = foodPhoto[0].PhotoByteData;
+                    imageSource = ImageSource.FromStream(() => new MemoryStream(foodImageByteArray));
+                }
+
+                showFoodList.Add(new FoodToShowModel
+                {   Count = food.Count,
+                    Description = food.Description,
+                    Name = food.Name,
+                    Price = food.Price,
+                    PhotoSource = imageSource});
+            }
+
+            Dishes = new ObservableCollection<FoodToShowModel>(showFoodList);
         }
 
         public async Task InitializeCategories()
@@ -148,7 +171,7 @@ namespace RestaurantApp.ViewModels
 
         private void InitializeOrder()
         {
-            OrderedFoodList = new ObservableCollection<FoodModel>(itemsToOrder);
+            OrderedFoodList = new ObservableCollection<FoodToShowModel>(itemsToOrder);
         }
 
         private void AddSelectedFoodToOrder()
@@ -157,6 +180,7 @@ namespace RestaurantApp.ViewModels
             {
                 itemsToOrder.Add(selectedFood);
                 TotalCost += selectedFood.Price;
+                SelectedFoodFromOrder = selectedFood;
             }
 
             InitializeOrder();
@@ -166,9 +190,7 @@ namespace RestaurantApp.ViewModels
         {
             if (SelectedFoodFromOrder != null)
             {
-                itemsToOrder.Remove(SelectedFoodFromOrder);
                 SelectedFoodFromOrder.Count += 1;
-                itemsToOrder.Add(SelectedFoodFromOrder);
                 InitializeOrder();
                 TotalCost += SelectedFoodFromOrder.Price;
             }
@@ -176,13 +198,18 @@ namespace RestaurantApp.ViewModels
 
         private void OnMinusItemClicked()
         {
-            if (SelectedFoodFromOrder != null && SelectedFoodFromOrder.Count > 1)
+            if (SelectedFoodFromOrder != null && SelectedFoodFromOrder.Count >= 1)
             {
-                itemsToOrder.Remove(SelectedFoodFromOrder);
                 SelectedFoodFromOrder.Count -= 1;
-                itemsToOrder.Add(SelectedFoodFromOrder);
-                InitializeOrder();
                 TotalCost -= SelectedFoodFromOrder.Price;
+
+                if (SelectedFoodFromOrder.Count == 0)
+                {
+                    SelectedFoodFromOrder.Count += 1;
+                    itemsToOrder.Remove(SelectedFoodFromOrder);
+                    SelectedFoodFromOrder = null;
+                }
+                InitializeOrder();
             }
         }
 
