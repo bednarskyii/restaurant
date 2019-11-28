@@ -140,6 +140,9 @@
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\WelcomeBackground.jpeg" />
+    <BundleResource Include="Resources\woodBackground.png" />
+    <BundleResource Include="Resources\logoRestaurant.png" />
+    <BundleResource Include="Resources\waiterImage.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Renderers\" />

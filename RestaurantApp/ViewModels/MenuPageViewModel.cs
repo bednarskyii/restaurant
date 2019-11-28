@@ -146,27 +146,8 @@ namespace RestaurantApp.ViewModels
 
         public async Task InitializeCategories()
         {
-            List<CategoryModel> categories = await _database.GetCategory();
-            List<CategoryModel> finalcategories = await _database.GetCategory();
-
-            //TODO code doesn't work 
-            foreach (CategoryModel category in categories)
-            {
-                List<FoodModel> foods = await _database.GetRecordsAsync(category.CategoryId);
-                if (foods.Count < 1)
-                {
-                    try
-                    {
-                        finalcategories.Remove(category);
-                    }
-                    catch (Exception e)
-                    {
-                        var t = e.Message;
-                    }
-                }
-            }
-
-            Categories = new ObservableCollection<CategoryModel>(finalcategories);
+            Categories = new ObservableCollection<CategoryModel>(await _database.GetCategory());
+            SelectedCategory = Categories[0];
         }
 
         private void InitializeOrder()
