@@ -5,22 +5,13 @@
              Title="Manage categories">
     <ContentPage.Content>
         <Grid>
-            <Image Aspect="AspectFill" Source="woodBackground.png" />
+            <Image Aspect="AspectFill" Source="mainBackground.png" />
             <StackLayout Margin="20" >
                 <Entry Placeholder="Enter new category name" Text="{Binding NewCategoryName}"/>
-                <Grid>
-                    <Button Text="Add categoty" TextColor="White" FontAttributes="Bold" Command="{Binding AddCategory}"/>
-                    <Grid BackgroundColor="White"
-                          IsVisible="{Binding IsEditingButonVissible}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <Button Grid.Column="0" Text="Save" TextColor="White" FontAttributes="Bold" Command="{Binding SaveEdited}"/>
-                            <Button Grid.Column="1" Text="Cancel" TextColor="Red" FontAttributes="Bold" Command="{Binding CancelEdited}"/>
-                    </Grid>
-                </Grid>
+                <StackLayout Orientation="Horizontal">
+                   <Button Text="Add categoty" TextColor="White" FontAttributes="Bold" Command="{Binding AddCategory}" HorizontalOptions="CenterAndExpand"/>
+                   <Button Grid.Column="1" Text="Delete category" TextColor="Red"  Command="{Binding DeleteCategory}" HorizontalOptions="CenterAndExpand"/>
+                </StackLayout>
 
                 <Label Text="List of categories:" FontAttributes="Bold" TextColor="White"/>
                     <ListView ItemsSource="{Binding CategoriesList}"
@@ -31,22 +22,13 @@
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <ViewCell>
-                                    <Frame Padding="5" BorderColor="White" Margin="0, 10, 10, 10" HeightRequest="50"> 
-                                       <Label Text="{Binding CategoryName}" FontSize="20"/>
+                                    <Frame Padding="5" BorderColor="White" Margin="0, 10, 10, 10"> 
+                                       <Label Text="{Binding CategoryName}" FontSize="20" />
                                     </Frame>
                                 </ViewCell>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-
-                    <Button Grid.Column="0" Text="Edit category" TextColor="White" Command="{Binding EditCategory}"/>
-                    <Button Grid.Column="1" Text="Delete category" TextColor="Red"  Command="{Binding DeleteCategory}"/>
-                </Grid>
             </StackLayout>
         </Grid>
     </ContentPage.Content>

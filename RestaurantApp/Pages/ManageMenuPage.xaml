@@ -5,7 +5,7 @@
              Title="Manage menu">
     <ContentPage.Content>
         <Grid>
-            <Image Aspect="AspectFill" Source="woodBackground.png" />
+            <Image Aspect="AspectFill" Source="mainBackground.png" />
             <StackLayout>
                 <Frame HasShadow="True" Margin="20" Padding="5" HeightRequest="200">
                         <Grid>
@@ -28,7 +28,7 @@
                                 <Entry Grid.Column="1" Placeholder="Enter price" Text="{Binding NewPrice}"/>
 
                                 <Image Grid.Column="2" Source="{Binding NewImageSource}"/>
-                                <Button Grid.Column="3"  Command="{Binding ChooseImage}" Text="Image" />
+                                <Button Grid.Column="3"  Command="{Binding ChooseImage}" TextColor="#3d1302" Text="Image" />
 
                                     <Grid Grid.Column="4" Padding="0" WidthRequest="210" HorizontalOptions="End">
                                         <Grid.ColumnDefinitions>
@@ -37,13 +37,13 @@
                                         </Grid.ColumnDefinitions>
 
                                         <Entry Grid.Column="0" Placeholder="Enter category name" Text="{Binding EnterCategoryName}" ClearButtonVisibility="WhileEditing"/>
-                                        <Button Grid.Column="1" Text="{Binding ShowHideText}" Command="{Binding ShowHideCommand}"/>
+                                        <Button Grid.Column="1" Text="{Binding ShowHideText}" TextColor="#3d1302" Command="{Binding ShowHideCommand}"/>
                                     </Grid>
                             </Grid>
 
                             <Entry Placeholder="Enter description" Grid.Row="1" HeightRequest="120" Text="{Binding NewFoodDescription}"/>
 
-                            <Button Text="Add" Grid.Row="2" Command="{Binding AddNewFood}"/>
+                            <Button Text="Add" Grid.Row="2" Command="{Binding AddNewFood}" TextColor="#3d1302"/>
 
                             <Grid Grid.Row="2" BackgroundColor="White" IsVisible="{Binding IsEditingButonVissible}">
                                 <Grid.ColumnDefinitions>
@@ -51,19 +51,10 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
 
-                                <Button Text="Save" Grid.Column="0" Command="{Binding SaveEdit}"/>
-                                <Button Text="Cancel" Grid.Column="1" TextColor="Red" Command="{Binding CancelEdit}"/>
+                                <Button Text="Save" Grid.Column="0" TextColor="#3d1302" Command="{Binding SaveEdit}"/>
+                                <Button Text="Cancel" Grid.Column="1" TextColor="#3d1302" Command="{Binding CancelEdit}"/>
                             </Grid>
-                            <Grid Margin="0,0,15,0" Grid.Row="1" HorizontalOptions="End" IsVisible="{Binding IsListVisible}" VerticalOptions="Start">
-                                <!--content view-->
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="120"/>
-                                </Grid.RowDefinitions>
-
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="200"/>
-                                </Grid.ColumnDefinitions>
-
+                            <ContentView Grid.Row="1" HeightRequest="120" WidthRequest="200" Margin="0,0,15,0" HorizontalOptions="End" IsVisible="{Binding IsListVisible}" VerticalOptions="Start">
                                 <ListView ItemsSource="{Binding CategoriesListToShow}" SeparatorVisibility="None" SelectedItem="{Binding SelectedCategory}">
                                     <ListView.ItemTemplate>
                                         <DataTemplate>
@@ -73,21 +64,15 @@
                                         </DataTemplate>
                                     </ListView.ItemTemplate>
                                 </ListView>
-                            </Grid>
+                            </ContentView>
                         </Grid>
                 </Frame>
 
                 <StackLayout  Margin="10">
-                    <Grid BackgroundColor="White" Margin="5,5,5,-5">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Button Text="Edit" Command="{Binding EditFood}"/>
-                        <Button Text="Delete" Command="{Binding DeleteFood}" TextColor="Red" Grid.Column="1"/>
-                    </Grid>
-
+                    <StackLayout Orientation="Horizontal" VerticalOptions="Center" HorizontalOptions="CenterAndExpand" WidthRequest="300" BackgroundColor="Transparent">
+                        <Button Text="Edit" TextColor="#3d1302" Command="{Binding EditFood}" VerticalOptions="CenterAndExpand" BackgroundColor="White" WidthRequest="150"/>
+                        <Button Text="Delete" TextColor="#3d1302" Command="{Binding DeleteFood}" VerticalOptions="CenterAndExpand" BackgroundColor="White" WidthRequest="150"/>
+                    </StackLayout>
 
                     <CollectionView ItemsSource="{Binding GroupedList}"
                                     IsGrouped="true"
@@ -96,19 +81,21 @@
                                     Margin="5,0,5,5">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <Label Grid.Column="1" 
-                                       Text="{Binding Name}" 
+                                <Label Text="{Binding Name}"
+                                       FontSize="20"
                                        FontAttributes="Bold"
                                        TextColor="White"/>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                         <CollectionView.GroupHeaderTemplate>
                             <DataTemplate>
-                                <Label Text="{Binding Name}"
-                                       BackgroundColor="White"
-                                       FontSize="Large"
-                                       FontAttributes="Bold"
-                                       Margin="10"/>
+                                <Frame Padding="0">
+                                    <Label Text="{Binding Name}"
+                                           FontSize="25"
+                                           FontAttributes="Bold"
+                                           VerticalOptions="Center"
+                                           HeightRequest="30"/>
+                                </Frame>
                             </DataTemplate>
                         </CollectionView.GroupHeaderTemplate>
                         <CollectionView.GroupFooterTemplate>

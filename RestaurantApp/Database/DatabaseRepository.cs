@@ -34,7 +34,6 @@ namespace RestaurantApp.Database
                 var d = await database.Table<FoodModel>().Where(i => i.DishTypeId == type).ToListAsync();
                 return d;
             }
-
             else
                 return await database.Table<FoodModel>().ToListAsync();
         }

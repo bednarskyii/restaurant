@@ -16,14 +16,10 @@ namespace RestaurantApp.ViewModels
         private ObservableCollection<CategoryModel> categoriesList;
         private string newCategoryName;
         private List<string> categoriesNames;
-        private bool isEditingButonVissible;
 
         public event PropertyChangedEventHandler PropertyChanged;
         public Command AddCategory { get; set; }
         public Command DeleteCategory { get; set; }
-        public Command EditCategory { get; set; }
-        public Command SaveEdited { get; set; }
-        public Command CancelEdited { get; set; }
         public CategoryModel SelectedCategory { get; set; }
 
         public ManageCategoriesViewModel()
@@ -31,22 +27,8 @@ namespace RestaurantApp.ViewModels
             database = new DatabaseRepository();
             AddCategory = new Command(() => OnAddCategoryClicked());
             DeleteCategory = new Command(() => OnDeleteCategoryClicked());
-            EditCategory = new Command(() => OnEditCategoryClicked());
-            SaveEdited = new Command(() => OnSaveEditedClicked());
-            CancelEdited = new Command(() => OnCancelEditedClicked());
 
             InitializeCategoriesList();
-        }
-
-        public bool IsEditingButonVissible
-        {
-            get => isEditingButonVissible;
-
-            set
-            {
-                isEditingButonVissible = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsEditingButonVissible)));
-            }
         }
 
         public string NewCategoryName
@@ -113,33 +95,6 @@ namespace RestaurantApp.ViewModels
             {
                 UserDialogs.Instance.Alert("Select an category, please");
             }
-        }
-
-        private void OnEditCategoryClicked()
-        {
-            if(SelectedCategory != null)
-            {
-                IsEditingButonVissible = true;
-                NewCategoryName = SelectedCategory.CategoryName;
-            }
-            else
-            {
-                UserDialogs.Instance.Alert("Select an category, please");
-            }
-        }
-
-        private void OnSaveEditedClicked()
-        {
-            //TODO transferring logic if we change categoryName
-
-            IsEditingButonVissible = false;
-            NewCategoryName = null;
-        }
-
-        private void OnCancelEditedClicked()
-        {
-            IsEditingButonVissible = false;
-            NewCategoryName = null;
         }
 
     }

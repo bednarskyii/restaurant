@@ -3,11 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="RestaurantApp.Pages.MenuPage">
     <ContentPage.Content>
+        <Grid>
         <Grid RowSpacing="0" Margin="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="0.05*"/>
-                <RowDefinition Height="0.05*"/>
-                <RowDefinition Height="0.90*"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="30"/>
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
@@ -19,7 +21,7 @@
                 <Frame Margin="100,5,5,5" BackgroundColor="White" Padding="0" CornerRadius="20">
                     <Image Source="logoRestaurant.png" Aspect="AspectFill"/>
                 </Frame>
-                <Label Text="Agileo Restaurant" TextColor="White" FontAttributes="Bold" FontSize="30" VerticalOptions="Center"/>
+                <Label Text="Shabo*** Restaurant" TextColor="White" FontAttributes="Bold" FontSize="30" VerticalOptions="Center"/>
                 <StackLayout Orientation="Horizontal" HorizontalOptions="EndAndExpand" Margin="5,5,20,5" VerticalOptions="Center">
                     <Label Text="{Binding TotalCost}" FontSize="30" TextColor="White" FontAttributes="Bold"/>
                     <Label Text="UAH - order price" TextColor="White" VerticalOptions="Center"/>
@@ -43,47 +45,59 @@
             </CollectionView>
 
             <StackLayout Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" BackgroundColor="#3d1302" Margin="0">
-                <Button Margin="0,2,0,0" Text="Make order" FontSize="20" FontAttributes="Bold" TextColor="White"/>
+                <Button Margin="0,2,0,0" HeightRequest="30" Text="Make order" Command="{Binding MakeOrder}" FontSize="20" FontAttributes="Bold" TextColor="White"/>
                 <Grid>
-                    <ListView ItemsSource="{Binding OrderedFoodList}"
-                              Margin="3,0,0,0"
-                              SeparatorVisibility="None"
-                              SelectedItem="{Binding SelectedFoodFromOrder}">
-                        <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <ViewCell>
-                                        <StackLayout Orientation="Vertical">
-                                           <Label Text="{Binding Name}" HorizontalOptions="CenterAndExpand" FontAttributes="Bold"/>
-                                               <StackLayout Orientation="Horizontal" Margin="5,0,0,0">
-                                                   <Label Text="items: "/>
-                                                   <Label Text="{Binding Count}"/>
-                                                   <Label Text="price: "/>
-                                                   <Label Text="{Binding Price}"/>
-                                               </StackLayout>
-                                        </StackLayout>
-                                    </ViewCell>
-                                </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                    <Image Source="waiterImage.png" VerticalOptions="End"/>
-                </Grid>
-                <StackLayout Orientation="Horizontal" Margin="3,0,0,0" BackgroundColor="White">
-                    <Button Command="{Binding PlusItemInOrder}" Text="+" FontSize="30" TextColor="Black" HorizontalOptions="CenterAndExpand"/>
-                    <Label Text="{Binding SelectedFoodFromOrder.Name}" Margin="2"/>
-                    <Button Command="{Binding MinusItemInOrder}" Text="-" FontSize="30" TextColor="Black" HorizontalOptions="CenterAndExpand"/>
-                </StackLayout>
-                <Button Text="Delete food" Command="{Binding DeleteFoodFromOrder}" TextColor="White" FontAttributes="Bold"/>
+                    <StackLayout>
+                        <ListView ItemsSource="{Binding OrderedFoodList}"
+                                  Margin="0,0,0,-7"
+                                  SeparatorVisibility="None"
+                                  SelectedItem="{Binding SelectedFoodFromOrder}"
+                                  VerticalScrollBarVisibility="Always">
+                            <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <ViewCell>
+                                            <StackLayout Orientation="Vertical">
+                                               <Label Text="{Binding Name}" HorizontalOptions="CenterAndExpand" FontAttributes="Bold"/>
+                                                   <StackLayout Orientation="Horizontal" Margin="5,0,0,0">
+                                                       <Label Text="items: "/>
+                                                       <Label Text="{Binding Count}"/>
+                                                       <Label Text="price: " Margin="30,0,0,0"/>
+                                                       <Label Text="{Binding Price}"/>
+                                                   </StackLayout>
+                                            </StackLayout>
+                                        </ViewCell>
+                                    </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                        <Image Source="waiterImage.png" VerticalOptions="End" BackgroundColor="White" Margin="0"/>
+                    </StackLayout>
 
+                    <Label Text="Please, choose foods. Your order list is empty." IsVisible="{Binding IsOrderListEmpty}" HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Start" Margin="0,60,0,0"/>
+
+                </Grid>
+
+                <Frame HeightRequest="30" Padding="0">
+                    <StackLayout Orientation="Horizontal" Margin="3,0,0,0" BackgroundColor="White">
+                        <Button Command="{Binding PlusItemInOrder}" Text="+" FontSize="30" TextColor="Black" HorizontalOptions="CenterAndExpand"/>
+                        <Label Text="{Binding SelectedFoodFromOrder.Name}" HeightRequest="5"/>
+                        <Button Command="{Binding MinusItemInOrder}" Text="-" FontSize="30" TextColor="Black" HorizontalOptions="CenterAndExpand"/>
+                    </StackLayout>
+                </Frame>
+
+                <Button Text="Delete food" Command="{Binding DeleteFoodFromOrder}" BackgroundColor="White" TextColor="Black" FontAttributes="Bold"/>
+                <Button Text="Clear order list" Command="{Binding ClearOrderList}" BackgroundColor="White" TextColor="Black" FontAttributes="Bold" Margin="0, 0, 0, 10"/>
             </StackLayout>
-                <Image Grid.Row="2" Grid.Column="0" Margin="-6" Aspect="AspectFill" Source="woodBackground.png" VerticalOptions="FillAndExpand"/>
-                    <CollectionView Grid.Row="2"
-                                    Grid.Column="0"
-                                    VerticalOptions="Start"
-                                    Margin="20"
-                                    ItemsSource="{Binding Dishes}"
-                                    BackgroundColor="Transparent"
-                                    SelectionMode="Single"
-                                    SelectedItem="{Binding SelectedFood}">
+
+            <Image Grid.Row="2" Grid.Column="0" Margin="-6" Aspect="AspectFill" Source="mainBackground.png" VerticalOptions="FillAndExpand"/>
+
+            <CollectionView Grid.Row="2"
+                            Grid.Column="0"
+                            VerticalOptions="Start"
+                            Margin="20"
+                            ItemsSource="{Binding Dishes}"
+                            BackgroundColor="Transparent"
+                            SelectionMode="Single"
+                            SelectedItem="{Binding SelectedFood}">
                         <CollectionView.ItemsLayout>
                             <GridItemsLayout Orientation="Vertical" Span="2" VerticalItemSpacing="20" HorizontalItemSpacing="20"/>
                         </CollectionView.ItemsLayout>
@@ -91,25 +105,76 @@
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <StackLayout Padding="2">
-                                    <Frame Margin="10" HeightRequest="150" HasShadow="True" CornerRadius="90">
-                                        <Grid>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="0.50*"/>
-                                                <RowDefinition Height="0.15*"/>
-                                                <RowDefinition Height="0.15*"/>
-                                                <RowDefinition Height="0.20*"/>
-                                            </Grid.RowDefinitions>
-
-                                            <Image Grid.Row="0" Source="{Binding PhotoSource}"/>
-                                            <Label Grid.Row="1" FontAttributes="Bold" Text="{Binding Name}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
-                                            <Label Grid.Row="2" Text="{Binding Description}" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" Margin="5,1,1,1"/>
-                                            <Label Grid.Row="3" FontAttributes="Bold" Text="{Binding Price}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
-                                        </Grid>
+                                    <Frame Margin="10" HeightRequest="170" HasShadow="True" CornerRadius="90">
+                                        <StackLayout>
+                                            <Frame HeightRequest="70" CornerRadius="60" HasShadow="False" Padding="0" Margin="-10">
+                                                <Image Source="{Binding PhotoSource}" />
+                                            </Frame>
+                                            <Label Margin="0,10,0,0" FontAttributes="Bold" Text="{Binding Name}" HeightRequest="20" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
+                                            <Label Margin="5,1,1,1" HeightRequest="50" Text="{Binding Description}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" HorizontalTextAlignment="Center"/>
+                                            <StackLayout  HeightRequest="20" Orientation="Horizontal" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+                                               <Label  FontAttributes="Bold" Text="{Binding Price}" />
+                                               <Label Margin="0" TextColor="Black" Text="UAH"/>
+                                           </StackLayout>
+                                        </StackLayout>
                                     </Frame>
                                 </StackLayout>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
+
+            <StackLayout x:Name="Footer" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="White" Orientation="Horizontal">
+                <Label Margin="20,0,0,0" Text="Shabo*** restaurant ©2019. Privacy policy." HorizontalOptions="CenterAndExpand" VerticalOptions="Center"/>
+                <StackLayout Orientation="Horizontal" HorizontalOptions="EndAndExpand" BackgroundColor="White" Margin="0,0,20,0">
+                        <Label VerticalOptions="Center" TextColor="Black" Text="Cashier mode: "/>
+                        <Switch IsToggled="{Binding IsCashierMode}" OnColor="Brown" ThumbColor="Black"/>
+                </StackLayout>
+
+            </StackLayout>
+
+        </Grid>
+
+        <ContentView BackgroundColor="#C0808080" Padding="10, 0" IsVisible="{Binding IsGuestPopUpVissible}" AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">  
+            <Frame  VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="170" WidthRequest="300" BackgroundColor="White">
+            <StackLayout Orientation="Vertical" >
+                <Label Margin="0,5,0,5" TextColor="Black" VerticalOptions="Start" HorizontalOptions="Center" VerticalTextAlignment="Center"  Text="Thank you!" FontSize="40"/>  
+                <StackLayout Orientation="Horizontal" VerticalOptions="Center" HorizontalOptions="Start">
+                    <Label Margin="5,5,0,5" TextColor="Black" Text="Your final price: " FontSize="20"/>
+                    <Label Margin="0,5,0,5" TextColor="Black" Text="{Binding TotalCost}" FontSize="20"/>
+                    <Label Margin="0,5,0,5" TextColor="Black" Text="UAH" FontSize="20"/>
+                </StackLayout>
+                <StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand" HorizontalOptions="CenterAndExpand" WidthRequest="300">
+                    <Button Text="Accept" TextColor="White" Command="{Binding AcceptOrder}" VerticalOptions="CenterAndExpand" BackgroundColor="#3d1302" WidthRequest="150"/>
+                    <Button Text="Cancel" TextColor="White" Command="{Binding CancelOrder}" VerticalOptions="CenterAndExpand" BackgroundColor="#3d1302" WidthRequest="150"/>
+                </StackLayout>
+            </StackLayout>  
+            </Frame>
+        </ContentView>
+
+        <ContentView BackgroundColor="#C0808080" Padding="10, 0" IsVisible="{Binding IsCahierPopUpVissible}" AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">  
+            <Frame  VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="170" WidthRequest="300" BackgroundColor="White">
+            <StackLayout Orientation="Vertical" >
+                <StackLayout Orientation="Horizontal" VerticalOptions="Center" HorizontalOptions="Start">
+                    <Label Margin="5,5,0,5" TextColor="Black" Text="Guest bill: " FontSize="20"/>
+                    <Label Margin="0,5,0,5" TextColor="Black" Text="{Binding TotalCost}" FontSize="20"/>
+                    <Label Margin="0,5,0,5" TextColor="Black" Text="UAH" FontSize="20"/>
+                </StackLayout>
+                <StackLayout Orientation="Horizontal" VerticalOptions="Center" HorizontalOptions="Start">
+                    <Label Margin="5,5,0,5" TextColor="Black" Text="Received money: " FontSize="20"/>
+                    <Entry Margin="0,5,0,5" TextColor="Black" Text="{Binding RecievedMoney}" Placeholder="Enter recieved money" FontSize="20" Keyboard="Numeric"/>
+                </StackLayout>
+                <StackLayout Orientation="Horizontal" VerticalOptions="Center" HorizontalOptions="Start">
+                    <Label Margin="5,5,0,5" TextColor="Black" Text="Rest: " FontSize="20"/>
+                    <Label Margin="0,5,0,5" TextColor="Black" Text="{Binding Rest}" FontSize="20"/>
+                    <Label Margin="0,5,0,5" TextColor="Black" Text="UAH" FontSize="20"/>
+                </StackLayout>
+                <StackLayout Orientation="Horizontal" VerticalOptions="Center" HorizontalOptions="CenterAndExpand" WidthRequest="300">
+                    <Button Text="Accept" TextColor="White" Command="{Binding AcceptOrder}" VerticalOptions="CenterAndExpand" BackgroundColor="#3d1302" WidthRequest="150"/>
+                    <Button Text="Cancel" TextColor="White" Command="{Binding CancelOrder}" VerticalOptions="CenterAndExpand" BackgroundColor="#3d1302" WidthRequest="150"/>
+                </StackLayout>
+            </StackLayout>  
+            </Frame>
+        </ContentView>
 
         </Grid>
     </ContentPage.Content>

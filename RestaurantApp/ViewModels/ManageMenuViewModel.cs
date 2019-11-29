@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
+using Acr.UserDialogs;
 using RestaurantApp.Database;
 using RestaurantApp.DependencyServices;
 using RestaurantApp.Models;
@@ -283,26 +284,52 @@ namespace RestaurantApp.ViewModels
 
         private async Task OnDeleteFoodClicked()
         {
-            await database.DeleteItemByIdAsync(SelectedFood.DishId);
-            SelectedFood = null;
-            await InitializeGroups();
+            if (SelectedFood != null)
+            {
+                ConfirmConfig config = new ConfirmConfig()
+                {
+                    Message = $"Delete the {SelectedFood.Name}?",
+                    OkText = "Delete",
+                    CancelText = "Cancel"
+                };
+
+                var res = await UserDialogs.Instance.ConfirmAsync(config);
+
+                if (res)
+                {
+                    await database.DeleteItemByIdAsync(SelectedFood.DishId);
+                    SelectedFood = null;
+                    await InitializeGroups();
+                }
+            }
+            else
+            {
+                UserDialogs.Instance.Alert("Please, select a food");
+            }
         }
 
         private async Task OnEditFoodClicked()
         {
-            IsEditingButonVissible = true;
-
-            NewFoodDescription = SelectedFood.Description;
-            NewFoodName = SelectedFood.Name;
-            List<CategoryModel> category = await database.GetCategory(SelectedFood.DishTypeId);
-            SelectedCategory = category[0];
-            NewPrice = SelectedFood.Price;
-
-            List<FoodPhotoModel> foodPhoto = await database.GetPhoto(SelectedFood.PhotoId);
-            if(foodPhoto != null)
+            if(SelectedFood != null)
             {
-                foodImageByteArray = foodPhoto[0].PhotoByteData;
-                NewImageSource = ImageSource.FromStream(() => new MemoryStream(foodImageByteArray));
+                IsEditingButonVissible = true;
+
+                NewFoodDescription = SelectedFood.Description;
+                NewFoodName = SelectedFood.Name;
+                List<CategoryModel> category = await database.GetCategory(SelectedFood.DishTypeId);
+                SelectedCategory = category[0];
+                NewPrice = SelectedFood.Price;
+
+                List<FoodPhotoModel> foodPhoto = await database.GetPhoto(SelectedFood.PhotoId);
+                if (foodPhoto != null)
+                {
+                    foodImageByteArray = foodPhoto[0].PhotoByteData;
+                    NewImageSource = ImageSource.FromStream(() => new MemoryStream(foodImageByteArray));
+                }
+            }
+            else
+            {
+                UserDialogs.Instance.Alert("Please, select a food");
             }
         }
 

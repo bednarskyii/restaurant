@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
+using Acr.UserDialogs;
 using RestaurantApp.Database;
 using RestaurantApp.Models;
 using Xamarin.Forms;
@@ -12,17 +13,27 @@ namespace RestaurantApp.ViewModels
 {
     public class MenuPageViewModel : INotifyPropertyChanged
     {
+        private IDatabaseRepository _database;
         private ObservableCollection<FoodToShowModel> dishes;
         private ObservableCollection<CategoryModel> categories;
-        private IDatabaseRepository _database;
         private CategoryModel selectedCategory;
         private FoodToShowModel selectedFood;
         private List<FoodToShowModel> itemsToOrder = new List<FoodToShowModel>();
         private ObservableCollection<FoodToShowModel> orderedFoodList;
-        private decimal? totalCost = 0;
         private FoodToShowModel selectedFoodFromOrder;
+        private bool isGuestPopUpVissible;
+        private bool isOrderListEmpty;
+        private bool isCashierMode;
+        private bool isCahierPopUpVissible;
+        private decimal rest;
+        private decimal? totalCost = 0;
+        private string recievedMoney;
 
+        public Command ClearOrderList { get; set; }
+        public Command AcceptOrder { get; set; }
+        public Command CancelOrder { get; set; }
         public Command PlusItemInOrder { get; set; }
+        public Command MakeOrder { get; set; }
         public Command MinusItemInOrder { get; set; }
         public Command DeleteFoodFromOrder { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
@@ -31,12 +42,94 @@ namespace RestaurantApp.ViewModels
         {
             _database = new DatabaseRepository();
 
+            ClearOrderList = new Command(() => OnClearOrderListClicked());
+            AcceptOrder = new Command(() => OnAcceptOrderClicked());
+            CancelOrder = new Command(() => OnCancelOrderClicked());
+            MakeOrder = new Command(() => OnMakeOrderClicked());
             PlusItemInOrder = new Command(() => OnPlusItemClicked());
             MinusItemInOrder = new Command(() => OnMinusItemClicked());
             DeleteFoodFromOrder = new Command(() => OnDeleteFromOrderClicked());
 
+            OrderedFoodList = new ObservableCollection<FoodToShowModel>();
+
             InitializeCategories();
             InitializeDishesList(null);
+        }
+
+        public string RecievedMoney
+        {
+            get => recievedMoney;
+
+            set
+            {
+                recievedMoney = value;
+                if(recievedMoney != null)
+                    try
+                    {
+                        Rest = Convert.ToDecimal(recievedMoney) - (decimal)totalCost;
+                    }
+                    catch (Exception e)
+                    {
+                        RecievedMoney = null;
+                        Rest = 0;
+                    }
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RecievedMoney)));
+            }
+        }
+
+        public decimal Rest
+        {
+            get => rest;
+
+            set
+            {
+                rest = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Rest)));
+            }
+        }
+
+        public bool IsCashierMode
+        {
+            get => isCashierMode;
+
+            set
+            {
+                isCashierMode = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsCashierMode)));
+            }
+        }
+
+        public bool IsOrderListEmpty
+        {
+            get => isOrderListEmpty;
+
+            set
+            {
+                isOrderListEmpty = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsOrderListEmpty)));
+            }
+        }
+
+        public bool IsGuestPopUpVissible
+        {
+            get => isGuestPopUpVissible;
+
+            set
+            {
+                isGuestPopUpVissible = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsGuestPopUpVissible)));
+            }
+        }
+
+        public bool IsCahierPopUpVissible
+        {
+            get => isCahierPopUpVissible;
+
+            set
+            {
+                isCahierPopUpVissible = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsCahierPopUpVissible)));
+            }
         }
 
         public FoodToShowModel SelectedFoodFromOrder
@@ -67,6 +160,10 @@ namespace RestaurantApp.ViewModels
             set
             {
                 orderedFoodList = value;
+                if (OrderedFoodList == null || OrderedFoodList.Count < 1)
+                    IsOrderListEmpty = true;
+                else
+                    IsOrderListEmpty = false;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(OrderedFoodList)));
             }
         }
@@ -175,6 +272,14 @@ namespace RestaurantApp.ViewModels
                 InitializeOrder();
                 TotalCost += SelectedFoodFromOrder.Price;
             }
+            else if (OrderedFoodList.Count < 1)
+            {
+                UserDialogs.Instance.Alert("Your order list is empty");
+            }
+            else
+            {
+                UserDialogs.Instance.Alert("Please, select a food from the list");
+            }
         }
 
         private void OnMinusItemClicked()
@@ -192,6 +297,15 @@ namespace RestaurantApp.ViewModels
                 }
                 InitializeOrder();
             }
+            else if (OrderedFoodList.Count < 1)
+            {
+                UserDialogs.Instance.Alert("Your order list is empty");
+            }
+            else
+            {
+                UserDialogs.Instance.Alert("Please, select a food from the list");
+            }
+
         }
 
         private void OnDeleteFromOrderClicked()
@@ -203,6 +317,51 @@ namespace RestaurantApp.ViewModels
                 SelectedFoodFromOrder = null;
                 InitializeOrder();
             }
+            else if(OrderedFoodList.Count < 1)
+            {
+                UserDialogs.Instance.Alert("Your order list is empty");
+            }
+            else
+            {
+                UserDialogs.Instance.Alert("Please, select a food from the list");
+            }
+        }
+
+        private void OnMakeOrderClicked()
+        {
+            if(TotalCost > 0)
+            {
+                if (IsCashierMode)
+                    IsCahierPopUpVissible = true;
+                else
+                    IsGuestPopUpVissible = true;
+            }
+            else
+            {
+                UserDialogs.Instance.Alert("Your order list is empty");
+            }
+        }
+
+        private void OnCancelOrderClicked()
+        {
+            IsGuestPopUpVissible = false;
+            IsCahierPopUpVissible = false;
+        }
+
+        private void OnAcceptOrderClicked()
+        {
+            IsGuestPopUpVissible = false;
+            IsCahierPopUpVissible = false;
+            itemsToOrder = new List<FoodToShowModel>();
+            InitializeOrder();
+            TotalCost = 0;
+        }
+
+        private void OnClearOrderListClicked()
+        {
+            itemsToOrder = new List<FoodToShowModel>();
+            InitializeOrder();
+            TotalCost = 0;
         }
     }
 }

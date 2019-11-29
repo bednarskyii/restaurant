@@ -12,8 +12,6 @@ namespace RestaurantApp.Pages
             InitializeComponent();
 
             MasterPage.listView.ItemSelected += OnItemSelected;
-
-            //иварва
         }
 
         void OnItemSelected(object sender, SelectedItemChangedEventArgs e)
