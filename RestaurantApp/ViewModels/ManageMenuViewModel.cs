@@ -5,6 +5,8 @@ using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
 using Acr.UserDialogs;
+using Plugin.Media;
+using Plugin.Media.Abstractions;
 using RestaurantApp.Database;
 using RestaurantApp.DependencyServices;
 using RestaurantApp.Models;
@@ -18,20 +20,21 @@ namespace RestaurantApp.ViewModels
         private IPhotoPickerService photoPicker;
         private ObservableCollection<CategoryModel> categoriesList;
         private ObservableCollection<CategoryModel> categoriesListToShow;
+        private ObservableCollection<CategoryGroup> groupedList;
+        private CategoryModel selectedCategory;
+        private ImageSource newImageSource;
         private string enterCategoryName;
         private string showHideText = "▼";
-        private bool isListVisible;
-        private CategoryModel selectedCategory;
-        private ObservableCollection<CategoryGroup> groupedList;
         private string newFoodName;
-        private decimal? newPrice;
         private string newFoodDescription;
+        private bool isListVisible;
         private bool isEditingButonVissible;
+        private bool isPhotoSelectingVisible;
+        private decimal? newPrice;
         private byte[] foodImageByteArray;
-        private ImageSource newImageSource;
 
-        public FoodModel SelectedFood { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
+        public FoodModel SelectedFood { get; set; }
         public Command ShowHideCommand { get; set; }
         public Command AddNewFood { get; set; }
         public Command EditFood { get; set; }
@@ -39,6 +42,8 @@ namespace RestaurantApp.ViewModels
         public Command CancelEdit { get; set; }
         public Command SaveEdit { get; set; }
         public Command ChooseImage { get; set; }
+        public Command TakePhoto { get; set; }
+        public Command SelectFromGallery { get; set; }
 
         public ManageMenuViewModel()
         {
@@ -51,8 +56,21 @@ namespace RestaurantApp.ViewModels
             CancelEdit = new Command(() => OnCancelEditClicked());
             SaveEdit = new Command(() => OnSaveEditClicked());
             ChooseImage = new Command(() => OnChooseImageClicked());
+            TakePhoto = new Command(() => OnTakePhotoClicked());
+            SelectFromGallery = new Command(() => OnSelectPhotoClicked());
 
             InitializeCategoriesList();
+        }
+
+        public bool IsPhotoSelectingVisible
+        {
+            get => isPhotoSelectingVisible;
+
+            set
+            {
+                isPhotoSelectingVisible = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsPhotoSelectingVisible)));
+            }
         }
 
         public decimal? NewPrice
@@ -354,8 +372,40 @@ namespace RestaurantApp.ViewModels
             IsEditingButonVissible = false;
         }
 
-        private async Task OnChooseImageClicked()
+        private void OnChooseImageClicked()
         {
+            IsPhotoSelectingVisible = true;
+        }
+
+        private async Task OnTakePhotoClicked()
+        {
+            IsPhotoSelectingVisible = false;
+
+            if (CrossMedia.Current.IsCameraAvailable && CrossMedia.Current.IsTakePhotoSupported)
+            {
+                MediaFile file = await CrossMedia.Current.TakePhotoAsync(new StoreCameraMediaOptions
+                {
+                    SaveToAlbum = true,
+                    Directory = "Sample",
+                    Name = $"{DateTime.Now.ToString("dd.MM.yyyy_hh.mm.ss")}.jpg"
+                });
+
+                if (file == null)
+                    NewImageSource = ImageSource.FromStream(file.GetStream);
+                else
+                    UserDialogs.Instance.Alert("Photo not downloaded");
+
+            }
+            else
+            {
+                UserDialogs.Instance.Alert("Sorry, camera is not available");
+            }
+
+        }
+
+        private async Task OnSelectPhotoClicked()
+        {
+            IsPhotoSelectingVisible = false;
             var image = await photoPicker.GetImageStreamAsync();
 
             byte[] buffer = new byte[16 * 1024];
@@ -370,6 +420,7 @@ namespace RestaurantApp.ViewModels
             }
 
             NewImageSource = ImageSource.FromStream(() => new MemoryStream(foodImageByteArray));
+
         }
     }
 }

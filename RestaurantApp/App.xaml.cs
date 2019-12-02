@@ -1,4 +1,5 @@
 ﻿using System;
+using Plugin.Media;
 using RestaurantApp.Pages;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -11,7 +12,7 @@ namespace RestaurantApp
         {
 
             InitializeComponent();
-
+            CrossMedia.Current.Initialize();
             MainPage = new MainPage();
         }
 

@@ -36,5 +36,7 @@
 	<string>Assets.xcassets/AppIcon.appiconset</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Need to upload the food photos</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Need to make foods photo</string>
 </dict>
 </plist>

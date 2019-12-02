@@ -5,6 +5,7 @@
              Title="Manage menu">
     <ContentPage.Content>
         <Grid>
+        <Grid>
             <Image Aspect="AspectFill" Source="mainBackground.png" />
             <StackLayout>
                 <Frame HasShadow="True" Margin="20" Padding="5" HeightRequest="200">
@@ -107,6 +108,19 @@
                     </CollectionView>
                 </StackLayout>
             </StackLayout>
+        </Grid>
+        <ContentView BackgroundColor="#C0808080" Padding="10, 0" IsVisible="{Binding IsPhotoSelectingVisible}" AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">  
+            <Frame  VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="150" WidthRequest="300" BackgroundColor="White">
+                <StackLayout Orientation="Vertical" >
+                    <Label Margin="0,5,0,5" TextColor="Black" VerticalOptions="Start" HorizontalOptions="Center" VerticalTextAlignment="Center"  Text="Select photo source, please" FontSize="20"/>  
+                    <StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand" HorizontalOptions="CenterAndExpand" WidthRequest="300">
+                        <Button Text="Take photo" TextColor="White" Command="{Binding TakePhoto}" VerticalOptions="CenterAndExpand" BackgroundColor="#3d1302" WidthRequest="150"/>
+                        <Button Text="Gallery" TextColor="White" Command="{Binding SelectFromGallery}" VerticalOptions="CenterAndExpand" BackgroundColor="#3d1302" WidthRequest="150"/>
+                    </StackLayout>
+                </StackLayout>  
+            </Frame>
+        </ContentView>
+
         </Grid>
     </ContentPage.Content>
 </ContentPage>

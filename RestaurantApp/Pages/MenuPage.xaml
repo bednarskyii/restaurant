@@ -136,18 +136,18 @@
 
         <ContentView BackgroundColor="#C0808080" Padding="10, 0" IsVisible="{Binding IsGuestPopUpVissible}" AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">  
             <Frame  VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="170" WidthRequest="300" BackgroundColor="White">
-            <StackLayout Orientation="Vertical" >
-                <Label Margin="0,5,0,5" TextColor="Black" VerticalOptions="Start" HorizontalOptions="Center" VerticalTextAlignment="Center"  Text="Thank you!" FontSize="40"/>  
-                <StackLayout Orientation="Horizontal" VerticalOptions="Center" HorizontalOptions="Start">
-                    <Label Margin="5,5,0,5" TextColor="Black" Text="Your final price: " FontSize="20"/>
-                    <Label Margin="0,5,0,5" TextColor="Black" Text="{Binding TotalCost}" FontSize="20"/>
-                    <Label Margin="0,5,0,5" TextColor="Black" Text="UAH" FontSize="20"/>
-                </StackLayout>
-                <StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand" HorizontalOptions="CenterAndExpand" WidthRequest="300">
-                    <Button Text="Accept" TextColor="White" Command="{Binding AcceptOrder}" VerticalOptions="CenterAndExpand" BackgroundColor="#3d1302" WidthRequest="150"/>
-                    <Button Text="Cancel" TextColor="White" Command="{Binding CancelOrder}" VerticalOptions="CenterAndExpand" BackgroundColor="#3d1302" WidthRequest="150"/>
-                </StackLayout>
-            </StackLayout>  
+                <StackLayout Orientation="Vertical" >
+                    <Label Margin="0,5,0,5" TextColor="Black" VerticalOptions="Start" HorizontalOptions="Center" VerticalTextAlignment="Center"  Text="Thank you!" FontSize="40"/>  
+                    <StackLayout Orientation="Horizontal" VerticalOptions="Center" HorizontalOptions="Start">
+                        <Label Margin="5,5,0,5" TextColor="Black" Text="Your final price: " FontSize="20"/>
+                        <Label Margin="0,5,0,5" TextColor="Black" Text="{Binding TotalCost}" FontSize="20"/>
+                        <Label Margin="0,5,0,5" TextColor="Black" Text="UAH" FontSize="20"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand" HorizontalOptions="CenterAndExpand" WidthRequest="300">
+                        <Button Text="Accept" TextColor="White" Command="{Binding AcceptOrder}" VerticalOptions="CenterAndExpand" BackgroundColor="#3d1302" WidthRequest="150"/>
+                        <Button Text="Cancel" TextColor="White" Command="{Binding CancelOrder}" VerticalOptions="CenterAndExpand" BackgroundColor="#3d1302" WidthRequest="150"/>
+                    </StackLayout>
+                </StackLayout>  
             </Frame>
         </ContentView>
 

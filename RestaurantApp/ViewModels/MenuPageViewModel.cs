@@ -70,6 +70,7 @@ namespace RestaurantApp.ViewModels
                     }
                     catch (Exception e)
                     {
+                        //in cases if value is not a number
                         RecievedMoney = null;
                         Rest = 0;
                     }
@@ -350,6 +351,7 @@ namespace RestaurantApp.ViewModels
 
         private void OnAcceptOrderClicked()
         {
+            SelectedFoodFromOrder = null;
             IsGuestPopUpVissible = false;
             IsCahierPopUpVissible = false;
             itemsToOrder = new List<FoodToShowModel>();
@@ -359,6 +361,7 @@ namespace RestaurantApp.ViewModels
 
         private void OnClearOrderListClicked()
         {
+            SelectedFoodFromOrder = null;
             itemsToOrder = new List<FoodToShowModel>();
             InitializeOrder();
             TotalCost = 0;
