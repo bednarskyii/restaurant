@@ -13,7 +13,7 @@ namespace RestaurantApp
 
             InitializeComponent();
             CrossMedia.Current.Initialize();
-            MainPage = new MainPage();
+            MainPage = new WelcomePage();
         }
 
         protected override void OnStart()

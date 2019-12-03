@@ -13,6 +13,7 @@ namespace RestaurantApp.ViewModels
 {
     public class MenuPageViewModel : INotifyPropertyChanged
     {
+        private INavigation _navigation;
         private IDatabaseRepository _database;
         private ObservableCollection<FoodToShowModel> dishes;
         private ObservableCollection<CategoryModel> categories;
@@ -25,10 +26,12 @@ namespace RestaurantApp.ViewModels
         private bool isOrderListEmpty;
         private bool isCashierMode;
         private bool isCahierPopUpVissible;
+        private bool isEndOrderPopupVisible;
         private decimal rest;
         private decimal? totalCost = 0;
         private string recievedMoney;
 
+        public Command ContinueOrdering { get; set; }
         public Command ClearOrderList { get; set; }
         public Command AcceptOrder { get; set; }
         public Command CancelOrder { get; set; }
@@ -36,10 +39,12 @@ namespace RestaurantApp.ViewModels
         public Command MakeOrder { get; set; }
         public Command MinusItemInOrder { get; set; }
         public Command DeleteFoodFromOrder { get; set; }
+        public Command CloseMenu { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public MenuPageViewModel()
+        public MenuPageViewModel(INavigation navigation)
         {
+            _navigation = navigation;
             _database = new DatabaseRepository();
 
             ClearOrderList = new Command(() => OnClearOrderListClicked());
@@ -49,6 +54,8 @@ namespace RestaurantApp.ViewModels
             PlusItemInOrder = new Command(() => OnPlusItemClicked());
             MinusItemInOrder = new Command(() => OnMinusItemClicked());
             DeleteFoodFromOrder = new Command(() => OnDeleteFromOrderClicked());
+            CloseMenu = new Command(() => OnCloseMenuClicked());
+            ContinueOrdering = new Command(() => OnContinueOrderingClicked());
 
             OrderedFoodList = new ObservableCollection<FoodToShowModel>();
 
@@ -97,6 +104,17 @@ namespace RestaurantApp.ViewModels
             {
                 isCashierMode = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsCashierMode)));
+            }
+        }
+
+        public bool IsEndOrderPopupVisible
+        {
+            get => isEndOrderPopupVisible;
+
+            set
+            {
+                isEndOrderPopupVisible = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsEndOrderPopupVisible)));
             }
         }
 
@@ -351,8 +369,10 @@ namespace RestaurantApp.ViewModels
 
         private void OnAcceptOrderClicked()
         {
-            SelectedFoodFromOrder = null;
             IsGuestPopUpVissible = false;
+            IsEndOrderPopupVisible = true;
+
+            SelectedFoodFromOrder = null;
             IsCahierPopUpVissible = false;
             itemsToOrder = new List<FoodToShowModel>();
             InitializeOrder();
@@ -365,6 +385,16 @@ namespace RestaurantApp.ViewModels
             itemsToOrder = new List<FoodToShowModel>();
             InitializeOrder();
             TotalCost = 0;
+        }
+
+        private async Task OnCloseMenuClicked()
+        {
+            await _navigation.PopModalAsync();
+        }
+
+        private void OnContinueOrderingClicked()
+        {
+            IsEndOrderPopupVisible = false;
         }
     }
 }

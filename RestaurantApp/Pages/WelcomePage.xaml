@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="RestaurantApp.Pages.WelcomePage">
+    <ContentPage.Content>
+        <Grid>
+            <Image Source="RestaurantBackground.jpg" Aspect="AspectFill"/>
+            <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="Start" Margin="0,90,0,0">
+                <Label Text="Hi, guest!" FontSize="60" FontAttributes="Bold" TextColor="White" HorizontalOptions="CenterAndExpand"/>
+                <Label Text="Welcome to Shabo***" FontSize="40" FontAttributes="Bold" TextColor="White" HorizontalOptions="CenterAndExpand"/>
+                <Frame Padding="10"
+                       WidthRequest="150"
+                       HeightRequest="150"
+                       HorizontalOptions="Center"
+                       Margin="0,70,0,0"
+                       CornerRadius="75"
+                       BackgroundColor="White">
+                    <Button Text="Start" Command="{Binding Start}"  FontSize="40" FontAttributes="Bold" TextColor="#3d1302" VerticalOptions="Center" BackgroundColor="White"/>
+                </Frame>
+            </StackLayout>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

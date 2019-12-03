@@ -9,7 +9,7 @@ namespace RestaurantApp.Pages
     {
         public MenuPage()
         {
-            BindingContext = new MenuPageViewModel();
+            BindingContext = new MenuPageViewModel(Navigation);
             InitializeComponent();
         }
     }
