@@ -144,6 +144,8 @@
     <BundleResource Include="Resources\logoRestaurant.png" />
     <BundleResource Include="Resources\waiterImage.png" />
     <BundleResource Include="Resources\mainBackground.png" />
+    <BundleResource Include="Resources\adminIcon.png" />
+    <BundleResource Include="Resources\menuIcon.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DependencyServices\" />

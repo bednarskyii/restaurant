@@ -44,6 +44,7 @@ namespace RestaurantApp.ViewModels
         public Command ChooseImage { get; set; }
         public Command TakePhoto { get; set; }
         public Command SelectFromGallery { get; set; }
+        public Command CancelImageSelecting { get; set; }
 
         public ManageMenuViewModel()
         {
@@ -58,6 +59,7 @@ namespace RestaurantApp.ViewModels
             ChooseImage = new Command(() => OnChooseImageClicked());
             TakePhoto = new Command(() => OnTakePhotoClicked());
             SelectFromGallery = new Command(() => OnSelectPhotoClicked());
+            CancelImageSelecting = new Command(() => OnCancelImageSelecting());
 
             InitializeCategoriesList();
         }
@@ -422,5 +424,10 @@ namespace RestaurantApp.ViewModels
             NewImageSource = ImageSource.FromStream(() => new MemoryStream(foodImageByteArray));
 
         }
+
+        private async Task OnCancelImageSelecting()
+        {
+            IsPhotoSelectingVisible = false;
+        } 
     }
 }

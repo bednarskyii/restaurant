@@ -113,9 +113,12 @@
             <Frame  VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="150" WidthRequest="300" BackgroundColor="White">
                 <StackLayout Orientation="Vertical" >
                     <Label Margin="0,5,0,5" TextColor="Black" VerticalOptions="Start" HorizontalOptions="Center" VerticalTextAlignment="Center"  Text="Select photo source, please" FontSize="20"/>  
-                    <StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand" HorizontalOptions="CenterAndExpand" WidthRequest="300">
-                        <Button Text="Take photo" TextColor="White" Command="{Binding TakePhoto}" VerticalOptions="CenterAndExpand" BackgroundColor="#3d1302" WidthRequest="150"/>
-                        <Button Text="Gallery" TextColor="White" Command="{Binding SelectFromGallery}" VerticalOptions="CenterAndExpand" BackgroundColor="#3d1302" WidthRequest="150"/>
+                    <StackLayout Orientation="Vertical" VerticalOptions="EndAndExpand" HorizontalOptions="CenterAndExpand" WidthRequest="300">
+                        <StackLayout Orientation="Horizontal">
+                            <Button Text="Take photo" TextColor="White" Command="{Binding TakePhoto}" VerticalOptions="CenterAndExpand" BackgroundColor="#3d1302" WidthRequest="150"/>
+                            <Button Text="Gallery" TextColor="White" Command="{Binding SelectFromGallery}" VerticalOptions="CenterAndExpand" BackgroundColor="#3d1302" WidthRequest="150"/>
+                        </StackLayout>
+                            <Button Text="Cancel" TextColor="White" Command="{Binding CancelImageSelecting}" VerticalOptions="CenterAndExpand" BackgroundColor="#3d1302" WidthRequest="150"/>
                     </StackLayout>
                 </StackLayout>  
             </Frame>
